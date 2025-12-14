@@ -3,15 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <!-- Add these to your <head> section -->
-<meta name="description" content="Professional laundry services in Port Harcourt. Free pickup & delivery. Wash, dry clean, ironing, sneakers cleaning, and industrial laundry.">
-<meta name="keywords" content="laundry Port Harcourt, dry cleaning, laundry service, pickup delivery, industrial washing, sneakers cleaning">
-<meta name="author" content="Standard Wash Laundry">
-<meta property="og:title" content="Standard Wash Laundry - Professional Laundry Services">
-<meta property="og:description" content="From daily washes to industrial cleaning in Port Harcourt">
-<meta property="og:image" content="https://images.unsplash.com/photo-1601142637085-3238c2b9c83c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80">
-<meta property="og:url" content="https://standardwashlaundry.com">
-<meta name="twitter:card" content="summary_large_image">
+    <meta name="description" content="Professional laundry services in Port Harcourt. Free pickup & delivery. Wash, dry clean, ironing, sneakers cleaning, and industrial laundry.">
+    <meta name="keywords" content="laundry Port Harcourt, dry cleaning, laundry service, pickup delivery, industrial washing, sneakers cleaning">
+    <meta name="author" content="Standard Wash Laundry">
+    <meta property="og:title" content="Standard Wash Laundry - Professional Laundry Services">
+    <meta property="og:description" content="From daily washes to industrial cleaning in Port Harcourt">
+    <meta property="og:image" content="https://images.unsplash.com/photo-1601142637085-3238c2b9c83c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80">
+    <meta property="og:url" content="https://standardwashlaundry.com">
+    <meta name="twitter:card" content="summary_large_image">
     <title>Standard Wash Laundry - Professional Laundry Services</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -19,11 +18,14 @@
             --primary: #0056b3;
             --secondary: #007bff;
             --accent: #e67e22;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
             --light: #f8f9fa;
             --dark: #212529;
-            --success: #28a745;
             --gray: #6c757d;
             --light-gray: #e9ecef;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
         }
         
         * {
@@ -37,17 +39,18 @@
             background-color: #f5f7fa;
             color: var(--dark);
             line-height: 1.6;
+            scroll-behavior: smooth;
         }
         
         /* Header Styles */
         header {
-            background: linear-gradient(135deg, var(--primary), var(--secondary));
+            background: var(--gradient);
             color: white;
             padding: 1rem 0;
             box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
             position: sticky;
             top: 0;
-            z-index: 100;
+            z-index: 1000;
         }
         
         .header-container {
@@ -63,35 +66,42 @@
             display: flex;
             align-items: center;
             gap: 15px;
+            transition: transform 0.3s;
+        }
+        
+        .logo:hover {
+            transform: scale(1.02);
         }
         
         .logo h1 {
             font-size: 1.8rem;
-            font-weight: 700;
+            font-weight: 800;
+            letter-spacing: -0.5px;
         }
         
         .logo-icon {
             background: white;
             color: var(--primary);
-            width: 50px;
-            height: 50px;
-            border-radius: 50%;
+            width: 55px;
+            height: 55px;
+            border-radius: 12px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.5rem;
+            font-size: 1.8rem;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
         }
         
         .contact-info {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
+            gap: 5px;
         }
         
         .phone-numbers {
             display: flex;
-            gap: 15px;
-            margin-bottom: 5px;
+            gap: 20px;
         }
         
         .phone-numbers a {
@@ -99,12 +109,26 @@
             text-decoration: none;
             display: flex;
             align-items: center;
-            gap: 5px;
+            gap: 8px;
             transition: all 0.3s;
+            font-weight: 500;
+            padding: 5px 12px;
+            border-radius: 20px;
+            background: rgba(255, 255, 255, 0.1);
         }
         
         .phone-numbers a:hover {
+            background: rgba(255, 255, 255, 0.2);
             transform: translateY(-2px);
+        }
+        
+        .email a {
+            color: rgba(255, 255, 255, 0.9);
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 0.9rem;
         }
         
         /* Hero Section */
@@ -112,126 +136,212 @@
             background: linear-gradient(rgba(0, 86, 179, 0.85), rgba(0, 123, 255, 0.9)), url('https://images.unsplash.com/photo-1601142637085-3238c2b9c83c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
             background-size: cover;
             background-position: center;
-            height: 80vh;
+            background-attachment: fixed;
+            height: 85vh;
             display: flex;
             align-items: center;
             color: white;
             text-align: center;
             position: relative;
+            overflow: hidden;
+        }
+        
+        .hero::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
         }
         
         .hero-content {
-            max-width: 800px;
+            max-width: 850px;
             margin: 0 auto;
             padding: 20px;
+            position: relative;
+            z-index: 1;
         }
         
         .hero h2 {
-            font-size: 3.5rem;
-            margin-bottom: 20px;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.3);
+            font-size: 3.8rem;
+            margin-bottom: 25px;
+            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            font-weight: 800;
+            line-height: 1.2;
         }
         
         .hero p {
-            font-size: 1.4rem;
-            margin-bottom: 30px;
+            font-size: 1.5rem;
+            margin-bottom: 40px;
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
+            opacity: 0.95;
         }
         
-        .badge {
+        .hero-buttons {
+            display: flex;
+            gap: 20px;
+            justify-content: center;
+            flex-wrap: wrap;
+        }
+        
+        .btn {
+            padding: 16px 35px;
+            border: none;
+            border-radius: 50px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            transition: all 0.3s ease;
+            text-decoration: none;
+        }
+        
+        .btn-primary {
+            background: white;
+            color: var(--primary);
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+        }
+        
+        .btn-primary:hover {
+            transform: translateY(-5px) scale(1.05);
+            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+        }
+        
+        .btn-secondary {
+            background: rgba(255, 255, 255, 0.15);
+            color: white;
+            backdrop-filter: blur(10px);
+            border: 2px solid rgba(255, 255, 255, 0.3);
+        }
+        
+        .btn-secondary:hover {
+            background: rgba(255, 255, 255, 0.25);
+            transform: translateY(-5px);
+        }
+        
+        .floating-badge {
+            position: absolute;
+            bottom: -25px;
+            left: 50%;
+            transform: translateX(-50%);
             background: var(--accent);
             color: white;
-            padding: 8px 20px;
-            border-radius: 30px;
-            font-weight: bold;
-            display: inline-block;
-            margin-top: 20px;
-            animation: pulse 2s infinite;
+            padding: 15px 30px;
+            border-radius: 50px;
+            font-weight: 700;
+            font-size: 1.2rem;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            box-shadow: 0 10px 25px rgba(230, 126, 34, 0.4);
+            cursor: pointer;
+            animation: float 3s ease-in-out infinite;
+            z-index: 10;
         }
         
-        @keyframes pulse {
-            0% { transform: scale(1); }
-            50% { transform: scale(1.05); }
-            100% { transform: scale(1); }
+        @keyframes float {
+            0%, 100% { transform: translateX(-50%) translateY(0); }
+            50% { transform: translateX(-50%) translateY(-10px); }
         }
         
         /* Main Content */
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 40px 20px;
+            padding: 60px 20px;
         }
         
         section {
-            margin-bottom: 60px;
+            margin-bottom: 80px;
         }
         
         .section-title {
             text-align: center;
-            margin-bottom: 40px;
-            position: relative;
+            margin-bottom: 50px;
         }
         
         .section-title h2 {
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             color: var(--primary);
             display: inline-block;
+            position: relative;
+            padding-bottom: 15px;
+            font-weight: 700;
         }
         
-        .section-title h2:after {
+        .section-title h2::after {
             content: '';
             position: absolute;
-            width: 80px;
-            height: 4px;
+            width: 100px;
+            height: 5px;
             background: var(--accent);
-            bottom: -15px;
+            bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            border-radius: 2px;
+            border-radius: 3px;
         }
         
         /* Pricing Section */
         .pricing-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
-            gap: 25px;
+            grid-template-columns: repeat(auto-fill, minmax(350px, 1fr));
+            gap: 30px;
         }
         
         .price-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 10px 20px rgba(0, 0, 0, 0.08);
-            transition: all 0.3s ease;
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
         }
         
         .price-card:hover {
-            transform: translateY(-10px);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.15);
+            transform: translateY(-15px) scale(1.02);
+            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.15);
+            border-color: var(--primary);
         }
         
         .price-header {
-            background: var(--primary);
+            background: var(--gradient);
             color: white;
-            padding: 20px;
+            padding: 30px 20px;
             text-align: center;
+            position: relative;
+        }
+        
+        .price-header::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--accent);
         }
         
         .price-header h3 {
-            font-size: 1.4rem;
-            margin-bottom: 10px;
+            font-size: 1.6rem;
+            margin-bottom: 15px;
+            font-weight: 600;
         }
         
         .price-amount {
-            font-size: 2.2rem;
-            font-weight: bold;
-            color: var(--accent);
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: white;
+            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
         }
         
         .price-body {
-            padding: 25px;
+            padding: 30px;
         }
         
         .price-body ul {
@@ -239,333 +349,222 @@
         }
         
         .price-body li {
-            padding: 12px 0;
+            padding: 15px 0;
             border-bottom: 1px dashed var(--light-gray);
             display: flex;
+            justify-content: space-between;
             align-items: center;
+            font-size: 1.1rem;
         }
         
-        .price-body li:before {
-            content: "✓";
-            color: var(--success);
-            font-weight: bold;
-            margin-right: 10px;
-            font-size: 1.2rem;
+        .price-body li:last-child {
+            border-bottom: none;
+        }
+        
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            text-align: center;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
+            transition: all 0.3s ease;
+            border: 2px solid transparent;
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-8px);
+            border-color: var(--primary);
+            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
+        }
+        
+        .feature-icon {
+            width: 80px;
+            height: 80px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 20px;
+            font-size: 2rem;
+            color: white;
         }
         
         /* Payment Section */
         .payment-section {
             background: white;
-            border-radius: 15px;
-            padding: 30px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.05);
+            border-radius: 20px;
+            padding: 40px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .payment-section::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 5px;
+            background: var(--gradient);
         }
         
         .payment-method {
             display: flex;
             align-items: center;
-            gap: 20px;
-            padding: 20px;
-            background: var(--light);
-            border-radius: 10px;
-            margin: 20px 0;
+            gap: 30px;
+            padding: 30px;
+            background: linear-gradient(135deg, #f8f9ff, #eef4ff);
+            border-radius: 15px;
+            margin: 30px 0;
+            border: 2px solid var(--light-gray);
         }
         
         .payment-icon {
-            background: #00bfa5;
+            background: linear-gradient(135deg, #00bfa5, #00a896);
             color: white;
-            width: 70px;
-            height: 70px;
-            border-radius: 50%;
+            width: 80px;
+            height: 80px;
+            border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
+            font-size: 2.5rem;
+            flex-shrink: 0;
         }
         
         .payment-details h3 {
             color: var(--primary);
-            margin-bottom: 10px;
+            margin-bottom: 15px;
+            font-size: 1.5rem;
         }
         
         .account-number {
-            font-size: 1.4rem;
-            font-weight: bold;
+            font-size: 1.8rem;
+            font-weight: 800;
             color: var(--dark);
-            margin: 5px 0;
+            margin: 10px 0;
             background: #e9f7fe;
-            padding: 10px 15px;
-            border-radius: 8px;
+            padding: 15px 20px;
+            border-radius: 10px;
             display: inline-block;
-            word-break: break-all;
-        }
-        
-        .copy-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-            margin-top: 10px;
-            transition: all 0.3s;
-        }
-        
-        .copy-btn:hover {
-            background: #004494;
-            transform: translateY(-2px);
+            letter-spacing: 2px;
+            border: 2px dashed var(--primary);
         }
         
         .payment-note {
             background: #e8f8f5;
-            padding: 15px;
+            padding: 20px;
             border-radius: 10px;
-            margin-top: 20px;
-            border-left: 4px solid #00bfa5;
+            margin-top: 25px;
+            border-left: 5px solid #00bfa5;
+            display: flex;
+            align-items: center;
+            gap: 15px;
         }
         
         /* Locations Section */
         .locations-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 35px;
         }
         
         .location-card {
             background: white;
-            border-radius: 15px;
+            border-radius: 20px;
             overflow: hidden;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            transition: all 0.3s ease;
+        }
+        
+        .location-card:hover {
+            transform: translateY(-10px);
+            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.12);
         }
         
         .location-header {
-            background: var(--primary);
+            background: var(--gradient);
             color: white;
-            padding: 15px 20px;
-            font-weight: bold;
-            font-size: 1.2rem;
+            padding: 20px 25px;
+            font-weight: 700;
+            font-size: 1.3rem;
         }
         
         .location-body {
-            padding: 25px;
+            padding: 30px;
         }
         
         .location-body p {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 15px;
         }
         
         .location-body i {
             color: var(--primary);
-            min-width: 20px;
-            margin-top: 5px;
-        }
-        
-        .map-container {
-            height: 200px;
-            background: var(--light-gray);
-            border-radius: 10px;
-            margin: 20px 0;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            color: var(--gray);
-            font-weight: bold;
-            position: relative;
-            overflow: hidden;
-        }
-        
-        .map-placeholder {
-            position: absolute;
-            width: 100%;
-            height: 100%;
-            background: linear-gradient(45deg, #e9ecef 25%, #dee2e6 25%, #dee2e6 50%, #e9ecef 50%, #e9ecef 75%, #dee2e6 75%, #dee2e6 100%);
-            background-size: 20px 20px;
-            opacity: 0.2;
-        }
-        
-        .map-text {
-            position: relative;
-            z-index: 2;
+            font-size: 1.2rem;
+            margin-top: 3px;
+            flex-shrink: 0;
         }
         
         /* Contact Section */
         .contact-container {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-            gap: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
+            gap: 40px;
         }
         
         .contact-form {
             background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
+            padding: 40px;
+            border-radius: 20px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
         }
         
         .form-group {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
         }
         
         .form-group label {
             display: block;
-            margin-bottom: 8px;
-            font-weight: 500;
+            margin-bottom: 10px;
+            font-weight: 600;
             color: var(--dark);
+            font-size: 1.1rem;
         }
         
         .form-control {
             width: 100%;
-            padding: 12px 15px;
-            border: 1px solid var(--light-gray);
-            border-radius: 8px;
+            padding: 15px 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 10px;
             font-size: 1rem;
-            transition: border-color 0.3s;
+            transition: all 0.3s;
         }
         
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 3px rgba(0, 86, 179, 0.2);
-        }
-        
-        .submit-btn {
-            background: var(--primary);
-            color: white;
-            border: none;
-            padding: 14px 25px;
-            border-radius: 8px;
-            font-size: 1.1rem;
-            font-weight: 600;
-            cursor: pointer;
-            width: 100%;
-            transition: all 0.3s;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            gap: 10px;
-        }
-        
-        .submit-btn:hover {
-            background: #004494;
-            transform: translateY(-2px);
-        }
-        
-        .admin-panel {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.08);
-            display: none;
-        }
-        
-        .admin-header {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin-bottom: 20px;
-            padding-bottom: 15px;
-            border-bottom: 1px solid var(--light-gray);
-        }
-        
-        .feedback-list {
-            max-height: 400px;
-            overflow-y: auto;
-        }
-        
-        .feedback-item {
-            padding: 15px;
-            border-bottom: 1px solid var(--light-gray);
-            margin-bottom: 15px;
-        }
-        
-        .feedback-header {
-            display: flex;
-            justify-content: space-between;
-            margin-bottom: 10px;
-        }
-        
-        .feedback-name {
-            font-weight: bold;
-            color: var(--primary);
-        }
-        
-        .feedback-date {
-            color: var(--gray);
-            font-size: 0.9rem;
-        }
-        
-        .feedback-service {
-            background: #e9f7fe;
-            display: inline-block;
-            padding: 3px 10px;
-            border-radius: 20px;
-            font-size: 0.85rem;
-            margin-bottom: 10px;
-        }
-        
-        .feedback-message {
-            background: #f8f9fa;
-            padding: 12px;
-            border-radius: 8px;
-            margin: 10px 0;
-        }
-        
-        .reply-section {
-            display: none;
-            margin-top: 15px;
-        }
-        
-        .reply-textarea {
-            width: 100%;
-            padding: 10px;
-            border: 1px solid var(--light-gray);
-            border-radius: 5px;
-            margin-bottom: 10px;
-            min-height: 80px;
-        }
-        
-        .reply-btn {
-            background: var(--success);
-            color: white;
-            border: none;
-            padding: 8px 15px;
-            border-radius: 5px;
-            cursor: pointer;
-            display: inline-flex;
-            align-items: center;
-            gap: 5px;
-        }
-        
-        .admin-toggle {
-            background: var(--gray);
-            color: white;
-            border: none;
-            padding: 10px 20px;
-            border-radius: 8px;
-            cursor: pointer;
-            font-weight: 500;
-            margin-bottom: 20px;
-            display: flex;
-            align-items: center;
-            gap: 10px;
-            transition: all 0.3s;
-        }
-        
-        .admin-toggle:hover {
-            background: #5a6268;
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
         }
         
         /* Footer */
         footer {
             background: var(--dark);
             color: white;
-            padding: 40px 0 20px;
+            padding: 60px 0 30px;
+            margin-top: 80px;
         }
         
         .footer-container {
@@ -576,22 +575,23 @@
         
         .footer-grid {
             display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 30px;
-            margin-bottom: 30px;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 40px;
+            margin-bottom: 40px;
         }
         
         .footer-col h3 {
-            font-size: 1.3rem;
-            margin-bottom: 20px;
+            font-size: 1.4rem;
+            margin-bottom: 25px;
             position: relative;
-            padding-bottom: 10px;
+            padding-bottom: 15px;
+            font-weight: 700;
         }
         
-        .footer-col h3:after {
+        .footer-col h3::after {
             content: '';
             position: absolute;
-            width: 40px;
+            width: 50px;
             height: 3px;
             background: var(--accent);
             bottom: 0;
@@ -599,41 +599,43 @@
         }
         
         .footer-col p {
-            margin-bottom: 15px;
+            margin-bottom: 20px;
             display: flex;
             align-items: flex-start;
-            gap: 10px;
+            gap: 15px;
+            opacity: 0.9;
         }
         
         .social-links {
             display: flex;
             gap: 15px;
-            margin-top: 20px;
+            margin-top: 25px;
         }
         
         .social-links a {
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 40px;
-            height: 40px;
+            width: 45px;
+            height: 45px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             color: white;
             transition: all 0.3s;
+            font-size: 1.2rem;
         }
         
         .social-links a:hover {
             background: var(--primary);
-            transform: translateY(-3px);
+            transform: translateY(-5px) rotate(5deg);
         }
         
         .copyright {
             text-align: center;
-            padding-top: 20px;
+            padding-top: 30px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: rgba(255, 255, 255, 0.7);
-            font-size: 0.9rem;
+            font-size: 0.95rem;
         }
         
         /* WhatsApp Button */
@@ -641,30 +643,177 @@
             position: fixed;
             bottom: 30px;
             right: 30px;
-            background: #25D366;
+            background: linear-gradient(135deg, #25D366, #128C7E);
             color: white;
-            width: 60px;
-            height: 60px;
+            width: 65px;
+            height: 65px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            box-shadow: 0 4px 15px rgba(37, 211, 102, 0.4);
+            font-size: 2rem;
+            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
             z-index: 1000;
-            animation: pulse 1.5s infinite;
+            animation: pulse 2s infinite;
             transition: all 0.3s;
+            text-decoration: none;
         }
         
         .whatsapp-btn:hover {
+            transform: scale(1.15) rotate(10deg);
+            box-shadow: 0 12px 25px rgba(37, 211, 102, 0.6);
+        }
+        
+        /* Admin Button */
+        .admin-btn {
+            position: fixed;
+            bottom: 110px;
+            right: 30px;
+            background: linear-gradient(135deg, #6c757d, #495057);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.2rem;
+            box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
+            z-index: 1000;
+            transition: all 0.3s;
+            text-decoration: none;
+            opacity: 0.7;
+        }
+        
+        .admin-btn:hover {
+            opacity: 1;
             transform: scale(1.1);
-            box-shadow: 0 6px 20px rgba(37, 211, 102, 0.6);
+        }
+        
+        /* Modal Styles */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.7);
+            z-index: 2000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; }
+            to { opacity: 1; }
+        }
+        
+        .modal-content {
+            background-color: white;
+            padding: 40px;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 550px;
+            position: relative;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            max-height: 90vh;
+            overflow-y: auto;
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .close-modal {
+            position: absolute;
+            top: 20px;
+            right: 25px;
+            font-size: 2rem;
+            cursor: pointer;
+            color: var(--gray);
+            transition: all 0.3s;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+        }
+        
+        .close-modal:hover {
+            color: var(--dark);
+            background-color: var(--light);
+            transform: rotate(90deg);
         }
         
         /* Responsive Design */
-        @media (max-width: 768px) {
+        @media (max-width: 992px) {
             .hero h2 {
+                font-size: 3rem;
+            }
+            
+            .hero p {
+                font-size: 1.3rem;
+            }
+            
+            .section-title h2 {
+                font-size: 2.5rem;
+            }
+        }
+        
+        @media (max-width: 768px) {
+            .header-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .contact-info {
+                align-items: center;
+                width: 100%;
+            }
+            
+            .phone-numbers {
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .hero h2 {
+                font-size: 2.5rem;
+            }
+            
+            .hero p {
+                font-size: 1.2rem;
+            }
+            
+            .hero-buttons {
+                flex-direction: column;
+                align-items: center;
+            }
+            
+            .btn {
+                width: 100%;
+                max-width: 300px;
+                justify-content: center;
+            }
+            
+            .section-title h2 {
                 font-size: 2.2rem;
+            }
+            
+            .payment-method {
+                flex-direction: column;
+                text-align: center;
+            }
+        }
+        
+        @media (max-width: 480px) {
+            .hero h2 {
+                font-size: 2rem;
             }
             
             .hero p {
@@ -672,148 +821,17 @@
             }
             
             .section-title h2 {
-                font-size: 2rem;
-            }
-            
-            .price-amount {
-                font-size: 1.8rem;
-            }
-        }
-        
-        @media (max-width: 480px) {
-            .hero h2 {
                 font-size: 1.8rem;
             }
             
-            .phone-numbers {
-                flex-direction: column;
-                align-items: flex-end;
-                gap: 3px;
+            .price-card, .contact-form, .payment-section {
+                padding: 25px;
             }
             
-            .header-container {
-                flex-direction: column;
-                gap: 15px;
-            }
-            
-            .contact-info {
-                align-items: flex-start;
-                width: 100%;
+            .account-number {
+                font-size: 1.5rem;
             }
         }
-        /* Pickup Modal Styles - Add this to your existing CSS */
-.modal {
-    display: none;
-    position: fixed;
-    top: 0;
-    left: 0;
-    width: 100%;
-    height: 100%;
-    background-color: rgba(0, 0, 0, 0.6);
-    z-index: 2000;
-    justify-content: center;
-    align-items: center;
-    backdrop-filter: blur(2px);
-}
-
-.modal-content {
-    background-color: white;
-    padding: 25px;
-    border-radius: 15px;
-    width: 90%;
-    max-width: 500px;
-    position: relative;
-    box-shadow: 0 10px 30px rgba(0, 0, 0, 0.25);
-    max-height: 90vh;
-    overflow-y: auto;
-}
-
-.close-modal {
-    position: absolute;
-    top: 15px;
-    right: 20px;
-    font-size: 1.8rem;
-    cursor: pointer;
-    color: var(--gray);
-    transition: all 0.3s;
-    width: 30px;
-    height: 30px;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-    border-radius: 50%;
-}
-
-.close-modal:hover {
-    color: var(--dark);
-    background-color: var(--light);
-    transform: rotate(90deg);
-}
-
-.modal h2 {
-    color: var(--primary);
-    margin-bottom: 15px;
-    font-size: 1.8rem;
-}
-
-.modal p {
-    margin-bottom: 20px;
-}
-
-.modal-form {
-    display: flex;
-    flex-direction: column;
-    gap: 20px;
-}
-
-.time-options {
-    display: grid;
-    grid-template-columns: repeat(2, 1fr);
-    gap: 12px;
-    margin-top: 10px;
-}
-
-.time-option {
-    background: var(--light);
-    padding: 12px;
-    border-radius: 10px;
-    cursor: pointer;
-    transition: all 0.2s;
-    display: flex;
-    align-items: center;
-    gap: 10px;
-    border: 2px solid transparent;
-}
-
-.time-option:hover {
-    background: #e3f2fd;
-}
-
-.time-option.selected {
-    background: #e3f2fd;
-    border-color: var(--primary);
-    font-weight: 500;
-}
-
-.confirmation-message {
-    text-align: center;
-    padding: 30px 0;
-}
-
-.confirmation-icon {
-    font-size: 3.5rem;
-    color: var(--success);
-    margin-bottom: 20px;
-}
-
-.confirmation-icon i {
-    animation: checkmark 0.5s ease-in-out;
-}
-
-@keyframes checkmark {
-    0% { transform: scale(0); }
-    70% { transform: scale(1.2); }
-    100% { transform: scale(1); }
     </style>
 </head>
 <body>
@@ -834,178 +852,215 @@
                 <div class="email">
                     <a href="mailto:standardwashlaundry@gmail.com"><i class="fas fa-envelope"></i> standardwashlaundry@gmail.com</a>
                 </div>
-                           </div>
+            </div>
+        </div>
+    </header>
+    
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="hero-content">
+            <h2>Professional Laundry Services</h2>
+            <p>From daily washes to industrial cleaning - we handle all your laundry needs with care and precision</p>
+            <div class="hero-buttons">
+                <button class="btn btn-primary" id="bookPickup">
+                    <i class="fas fa-calendar-check"></i> Book Free Pickup
+                </button>
+                <a href="tel:09029518654" class="btn btn-secondary">
+                    <i class="fas fa-phone"></i> Call Now
+                </a>
+            </div>
+        </div>
+        <div class="floating-badge" id="pickupBadge">
+            <i class="fas fa-truck"></i> FREE Pickup & Delivery • Click to Book
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="container">
+        <div class="section-title">
+            <h2>Why Choose Us</h2>
+        </div>
+        <div class="features-grid">
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-truck"></i>
                 </div>
+                <h3>Free Pickup & Delivery</h3>
+                <p>We come to you - absolutely free!</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-clock"></i>
                 </div>
-                </header>
-                
-                <!-- Hero Section -->
-                <section class="hero">
-                  <div class="hero-content">
-                    <h2>Professional Laundry Services</h2>
-                    <p>From daily washes to industrial cleaning - we handle all your laundry needs with care and precision</p>
-                <div class="badge" id="pickupBadge">
-  <i class="fas fa-truck"></i> FREE Pickup & Delivery • Book Now
-</div>
-                  </div>
-                </section>
-                
-                <!-- Pricing Section -->
-                <section class="container">
-                  <div class="section-title">
-                    <h2>Our Price List</h2>
-                  </div>
-                  <div class="pricing-grid">
-                    <!-- Clothing Pricing -->
-                    <div class="price-card">
-                      <div class="price-header">
-                        <h3>Clothing Services</h3>
-                      </div>
-                      <div class="price-body">
-                        <ul>
-                          <li>Single Shirt: <span class="price-amount">₦500</span></li>
-                          <li>Big Baggy Jeans: <span class="price-amount">₦800</span></li>
-                          <li>Big Pullover/Hoodie: <span class="price-amount">₦800</span></li>
-                          <li>One Up and Down: <span class="price-amount">₦1,000</span></li>
-                          <li>Express Washing: <span class="price-amount">₦1,000</span></li>
-                          <li>One Set of Suit: <span class="price-amount">₦2,000</span></li>
-                          <li>Ironing of Gown: <span class="price-amount">₦500</span></li>
-                          <li>Ironing of Shirt: <span class="price-amount">₦300</span></li>
-                          <li>Washing of Gown: <span class="price-amount">₦800</span></li>
-                        </ul>
-                      </div>
+                <h3>Same Day Service</h3>
+                <p>Express washing available</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-shield-alt"></i>
+                </div>
+                <h3>Quality Guaranteed</h3>
+                <p>100% satisfaction or money back</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-money-bill-wave"></i>
+                </div>
+                <h3>Pay After Delivery</h3>
+                <p>No upfront payment required</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pricing Section -->
+    <section class="container" id="pricing">
+        <div class="section-title">
+            <h2>Our Price List</h2>
+        </div>
+        <div class="pricing-grid">
+            <div class="price-card">
+                <div class="price-header">
+                    <h3>Clothing Services</h3>
+                </div>
+                <div class="price-body">
+                    <ul>
+                        <li>Single Shirt <span class="price-amount">₦500</span></li>
+                        <li>Big Baggy Jeans <span class="price-amount">₦800</span></li>
+                        <li>Big Pullover/Hoodie <span class="price-amount">₦800</span></li>
+                        <li>One Up and Down <span class="price-amount">₦1,000</span></li>
+                        <li>Express Washing <span class="price-amount">₦1,000</span></li>
+                        <li>One Set of Suit <span class="price-amount">₦2,000</span></li>
+                        <li>Ironing of Gown <span class="price-amount">₦500</span></li>
+                        <li>Ironing of Shirt <span class="price-amount">₦300</span></li>
+                        <li>Washing of Gown <span class="price-amount">₦800</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="price-card">
+                <div class="price-header">
+                    <h3>Home Linens</h3>
+                </div>
+                <div class="price-body">
+                    <ul>
+                        <li>Big Towel <span class="price-amount">₦1,000</span></li>
+                        <li>Medium Size Towel <span class="price-amount">₦700</span></li>
+                        <li>Small Towel <span class="price-amount">₦500</span></li>
+                        <li>Bed Spread <span class="price-amount">₦1,000</span></li>
+                        <li>Washing of Duvet <span class="price-amount">₦2,000</span></li>
+                        <li>Washing of Curtain <span class="price-amount">₦2,000+</span></li>
+                        <li>Washing of Rough Carpet <span class="price-amount">₦2,500+</span></li>
+                    </ul>
+                </div>
+            </div>
+            
+            <div class="price-card">
+                <div class="price-header">
+                    <h3>Special Services</h3>
+                </div>
+                <div class="price-body">
+                    <ul>
+                        <li>Sneakers Cleaning <span class="price-amount">₦800</span></li>
+                        <li>Industrial Washing <span class="price-amount">₦5,000+</span></li>
+                        <li>Express Service <span class="price-amount">+50% fee</span></li>
+                        <li>Same Day Delivery <span class="price-amount">+30% fee</span></li>
+                        <li>Stain Removal <span class="price-amount">Included</span></li>
+                        <li>Fragrance Additive <span class="price-amount">+₦200</span></li>
+                        <li>Wardrobe Organizing <span class="price-amount">₦1,500</span></li>
+                    </ul>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Payment Section -->
+    <section class="container" id="payment">
+        <div class="section-title">
+            <h2>Payment Details</h2>
+        </div>
+        <div class="payment-section">
+            <h3 style="color: var(--primary); margin-bottom: 15px;">How to Pay</h3>
+            <p style="font-size: 1.1rem; margin-bottom: 25px;">Pay securely using our Palmpay account. Payment is due after delivery.</p>
+            
+            <div class="payment-method">
+                <div class="payment-icon">
+                    <i class="fas fa-mobile-alt"></i>
+                </div>
+                <div class="payment-details">
+                    <h3>Palmpay Payment</h3>
+                    <p style="margin-bottom: 10px;"><strong>Account Name:</strong> Sunday Caleb</p>
+                    <p style="margin-bottom: 5px;"><strong>Account Number:</strong></p>
+                    <div class="account-number">9029518654</div>
+                    <button class="btn" id="copyAccount" style="padding: 12px 25px; margin-top: 15px; background: var(--primary); color: white;">
+                        <i class="fas fa-copy"></i> Copy Account Number
+                    </button>
+                    <div class="payment-note">
+                        <i class="fas fa-check-circle" style="color: #00bfa5; font-size: 1.3rem;"></i>
+                        <span>Pay AFTER delivery • Receipts via email • NO HIDDEN FEES</span>
                     </div>
-                    
-                    <!-- Home Linens Pricing -->
-                    <div class="price-card">
-                      <div class="price-header">
-                        <h3>Home Linens</h3>
-                      </div>
-                      <div class="price-body">
-                        <ul>
-                          <li>Big Towel: <span class="price-amount">₦1,000</span></li>
-                          <li>Medium Size Towel: <span class="price-amount">₦700</span></li>
-                          <li>Small Towel: <span class="price-amount">₦500</span></li>
-                          <li>Bed Spread: <span class="price-amount">₦1,000</span></li>
-                          <li>Washing of Duvet: <span class="price-amount">₦2,000</span></li>
-                          <li>Washing of Curtain: <span class="price-amount">₦2,000+</span></li>
-                          <li>Washing of Rough Carpet: <span class="price-amount">₦2,500+</span></li>
-                        </ul>
-                      </div>
-                    </div>
-                    
-                    <!-- Special Services -->
-                    <div class="price-card">
-                      <div class="price-header">
-                        <h3>Special Services</h3>
-                      </div>
-                      <div class="price-body">
-                        <ul>
-                          <li>Sneakers Cleaning: <span class="price-amount">₦800</span></li>
-                          <li>Industrial Washing: <span class="price-amount">₦5,000+</span></li>
-                          <li>Express Service: <span class="price-amount">+50% fee</span></li>
-                          <li>Same Day Delivery: <span class="price-amount">+30% fee</span></li>
-                          <li>Stain Removal: <span class="price-amount">Included</span></li>
-                          <li>Fragrance Additive: <span class="price-amount">+₦200</span></li>
-                          <li>Wardrobe Organizing: <span class="price-amount">₦1,500</span></li>
-                        </ul>
-                      </div>
-                    </div>
-                  </div>
-                </section>
-                
-                <!-- Payment Section -->
-                <section class="container">
-                  <div class="section-title">
-                    <h2>Payment Details</h2>
-                  </div>
-                  <div class="payment-section">
-                    <h3>How to Pay</h3>
-                    <p>Pay securely using our Palmpay account. Payment is due after delivery.</p>
-                    
-                    <div class="payment-method">
-                      <div class="payment-icon">
-                        <i class="fas fa-mobile-alt"></i>
-                      </div>
-                      <div class="payment-details">
-                        <h3>Palmpay Payment</h3>
-                        <p><strong>Account Name:</strong> Sunday Caleb</p>
-                        <p><strong>Account Number:</strong></p>
-                        <div class="account-number">9029518654</div>
-                        <button class="copy-btn" id="copyAccount">
-                          <i class="fas fa-copy"></i> Copy Account Number
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Locations Section -->
+    <section class="container" id="locations">
+        <div class="section-title">
+            <h2>Our Locations</h2>
+        </div>
+        <div class="locations-grid">
+            <div class="location-card">
+                <div class="location-header">
+                    Head Branch
+                </div>
+                <div class="location-body">
+                    <p><i class="fas fa-map-marker-alt"></i> 14 Chiwota Street Off St Johns by Ogbogoro Road, Port Harcourt</p>
+                    <p><i class="fas fa-phone"></i> 07068301550, 09134881246</p>
+                    <div style="margin: 25px 0;">
+                        <button class="btn" style="width: 100%; background: var(--primary); color: white;" onclick="window.open('https://maps.google.com/?q=14+Chiwota+Street+Off+St+Johns+by+Ogbogoro+Road+Port+Harcourt', '_blank')">
+                            <i class="fas fa-map-marked-alt"></i> Get Directions
                         </button>
-                        <div class="payment-note">
-                          <i class="fas fa-check-circle" style="color: #00bfa5; margin-right: 5px;"></i>
-                          Pay AFTER delivery • Receipts via email • NO HIDDEN FEES
-                        </div>
-                      </div>
                     </div>
-                  </div>
-                </section>
-                
-                <!-- Locations Section -->
-                <section class="container">
-                  <div class="section-title">
-                    <h2>Our Locations</h2>
-                  </div>
-                  <div class="locations-grid">
-                    <div class="location-card">
-                      <div class="location-header">
-                        Head Branch
-                      </div>
-                      <div class="location-body">
-                        <p><i class="fas fa-map-marker-alt"></i> 14 Chiwota Street Off St Johns by Ogbogoro Road, Port Harcourt</p>
-                        <p><i class="fas fa-phone"></i> 07068301550, 09134881246</p>
-                        <div class="map-container">
-                          <div class="map-placeholder"></div>
-                          <div class="map-text">Head Branch Location Map</div>
-                        </div>
-                        <button class="submit-btn" onclick="window.open('https://maps.google.com/?q=14+Chiwota+Street+Off+St+Johns+by+Ogbogoro+Road+Port+Harcourt', '_blank')">
-                          <i class="fas fa-map-marked-alt"></i> Get Directions
+                </div>
+            </div>
+            
+            <div class="location-card">
+                <div class="location-header">
+                    Branch Office
+                </div>
+                <div class="location-body">
+                    <p><i class="fas fa-map-marker-alt"></i> Road 2 Ruhuali Estate, Ogbogoro, Port Harcourt</p>
+                    <p><i class="fas fa-phone"></i> 09029518654, 07068301550</p>
+                    <div style="margin: 25px 0;">
+                        <button class="btn" style="width: 100%; background: var(--primary); color: white;" onclick="window.open('https://maps.google.com/?q=Road+2+Ruhuali+Estate+Ogbogoro+Port+Harcourt', '_blank')">
+                            <i class="fas fa-map-marked-alt"></i> Get Directions
                         </button>
-                      </div>
                     </div>
-                    
-                    <div class="location-card">
-                      <div class="location-header">
-                        Branch Office
-                      </div>
-                      <div class="location-body">
-                        <p><i class="fas fa-map-marker-alt"></i> Road 2 Ruhuali Estate, Ogbogoro, Port Harcourt</p>
-                        <p><i class="fas fa-phone"></i> 09029518654, 07068301550</p>
-                        <div class="map-container">
-                          <div class="map-placeholder"></div>
-                          <div class="map-text">Branch Office Location Map</div>
-                        </div>
-                        <button class="submit-btn" onclick="window.open('https://maps.google.com/?q=Road+2+Ruhuali+Estate+Ogbogoro+Port+Harcourt', '_blank')">
-                          <i class="fas fa-map-marked-alt"></i> Get Directions
-                        </button>
-                      </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Contact Section -->
+    <section class="container" id="contact">
+        <div class="section-title">
+            <h2>Contact Us</h2>
+        </div>
+        <div class="contact-container">
+            <div class="contact-form">
+                <h3 style="color: var(--primary); margin-bottom: 25px;">Send Feedback or Book Service</h3>
+                <form id="feedbackForm">
+                    <div class="form-group">
+                        <label for="name">Full Name</label>
+                        <input type="text" id="name" class="form-control" required>
                     </div>
-                  </div>
-                </section>
-                
-                <!-- Contact Section -->
-                <section class="container">
-                  <div class="section-title">
-                    <h2>Contact Us</h2>
-                  </div>
-                  <div class="contact-container">
-                    <div class="contact-form">
-                      <h3>Send Feedback or Book Service</h3>
-                      <form id="feedbackForm">
-                        <div class="form-group">
-                          <label for="name">Full Name</label>
-                          <input type="text" id="name" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                          <label for="phone">Phone Number</label>
-                          <input type="tel" id="phone" class="form-control" required>
-                        </div>
-                        <div class="form-group">
-                          <label for="service">Service Needed</label>
-                          <select id="service" class="form-control" required>
+                    <div class="form-group">
+                        <label for="phone">Phone Number</label>
+                        <input type="tel" id="phone" class="form-control" required>
+                    </div>
+                    <div class="form-group">
+                        <label for="service">Service Needed</label>
+                        <select id="service" class="form-control" required>
                             <option value="">Select a service</option>
                             <option value="Washing">Washing</option>
                             <option value="Dry Cleaning">Dry Cleaning</option>
@@ -1014,69 +1069,20 @@
                             <option value="Curtains/Bedsheets">Curtains/Bedsheets</option>
                             <option value="Industrial Washing">Industrial Washing</option>
                             <option value="Pickup & Delivery">Pickup & Delivery</option>
-                          </select>
-                        </div>
-                        <div class="form-group">
-                          <label for="message">Your Message</label>
-                          <textarea id="message" class="form-control" rows="4" required></textarea>
-                        </div>
-                        <button type="submit" class="submit-btn">
-                          <i class="fas fa-paper-plane"></i> Send Feedback
-                        </button>
-                      </form>
+                        </select>
                     </div>
-                    
-                    <div class="admin-panel" id="adminPanel">
-                      <div class="admin-header">
-                        <h3>Admin Feedback Panel</h3>
-                        <button class="admin-toggle" id="adminToggle">
-                          <i class="fas fa-eye-slash"></i> Hide Panel
-                        </button>
-                      </div>
-                      <div class="feedback-list" id="feedbackList">
-                        <!-- Feedback items will be added here dynamically -->
-                        <div class="feedback-item">
-                          <div class="feedback-header">
-                            <span class="feedback-name">Chinedu Okoro</span>
-                            <span class="feedback-date">Today, 10:30 AM</span>
-                          </div>
-                          <span class="feedback-service">Washing</span>
-                          <div class="feedback-message">
-                            Great service! My shirts came back perfectly clean and ironed.
-                          </div>
-                          <button class="reply-btn" onclick="toggleReply(this)">
-                            <i class="fas fa-reply"></i> Reply
-                          </button>
-                          <div class="reply-section">
-                            <textarea class="reply-textarea" placeholder="Type your reply here..."></textarea>
-                            <button class="reply-btn">
-                              <i class="fas fa-paper-plane"></i> Send Reply
-                            </button>
-                          </div>
-                        </div>
-                        
-                        <div class="feedback-item">
-                          <div class="feedback-header">
-                            <span class="feedback-name">Aisha Bello</span>
-                            <span class="feedback-date">Yesterday, 2:15 PM</span>
-                          </div>
-                          <span class="feedback-service">Dry Cleaning</span>
-                          <div class="feedback-message">
-                            The duvet cleaning was excellent, but delivery was late by 2 hours.
-                          </div>
-                          <button class="reply-btn" onclick="toggleReply(this)">
-                            <i class="fas fa-reply"></i> Reply
-                          </button>
-                          <div class="reply-section">
-                            <textarea class="reply-textarea" placeholder="Type your reply here..."></textarea>
-                            <button class="reply-btn">
-                              <i class="fas fa-paper-plane"></i> Send Reply
-                            </button>
-                          </div>
-                        </div>
-                      </div>
+                    <div class="form-group">
+                        <label for="message">Your Message</label>
+                        <textarea id="message" class="form-control" rows="5" required></textarea>
                     </div>
-                  </div>
+                    <button type="submit" class="btn" style="background: var(--primary); color: white; width: 100%;">
+                        <i class="fas fa-paper-plane"></i> Send Feedback
+                    </button>
+                </form>
+            </div>
+        </div>
+    </section>
+
     <!-- Footer -->
     <footer>
         <div class="footer-container">
@@ -1090,24 +1096,31 @@
                 
                 <div class="footer-col">
                     <h3>Quick Links</h3>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#" style="color: white;">Home</a></p>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#pricing" style="color: white;">Price List</a></p>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#locations" style="color: white;">Locations</a></p>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#contact" style="color: white;">Contact Us</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#" style="color: white; text-decoration: none;">Home</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#pricing" style="color: white; text-decoration: none;">Price List</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#payment" style="color: white; text-decoration: none;">Payment</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#locations" style="color: white; text-decoration: none;">Locations</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#contact" style="color: white; text-decoration: none;">Contact Us</a></p>
                 </div>
                 
                 <div class="footer-col">
                     <h3>Business Hours</h3>
                     <p><i class="fas fa-clock"></i> Monday - Friday: 7:30 AM - 10:00 PM</p>
                     <p><i class="fas fa-clock"></i> Saturday: 7:30 AM - 10:00 PM</p>
-                    
+                    <p><i class="fas fa-clock"></i> Sunday: 10:00 AM - 6:00 PM</p>
                     <p><i class="fas fa-truck"></i> FREE Pickup & Delivery Daily</p>
+                    
+                    <div class="social-links">
+                        <a href="https://wa.me/2348161848922" target="_blank"><i class="fab fa-whatsapp"></i></a>
+                        <a href="tel:09029518654"><i class="fas fa-phone"></i></a>
+                        <a href="mailto:standardwashlaundry@gmail.com"><i class="fas fa-envelope"></i></a>
+                    </div>
                 </div>
             </div>
             
             <div class="copyright">
                 <p>&copy; 2025 Standard Wash Laundry. All rights reserved.</p>
-                <p>Thanks for your patronage</p>
+                <p>Professional Laundry Services in Port Harcourt</p>
             </div>
         </div>
     </footer>
@@ -1116,84 +1129,144 @@
     <a href="https://wa.me/2348161848922" class="whatsapp-btn" target="_blank">
         <i class="fab fa-whatsapp"></i>
     </a>
-<script>
-    document.addEventListener('DOMContentLoaded', function() {
-        // Initialize all elements
-        const pickupModal = document.getElementById('pickupModal');
-        const pickupBadge = document.getElementById('pickupBadge');
-        const closeModal = document.querySelector('.close-modal');
-        const pickupForm = document.getElementById('pickupForm');
-        const timeOptions = document.querySelectorAll('.time-option');
-        const confirmationMessage = document.getElementById('confirmationMessage');
-        const confirmationDetails = document.getElementById('confirmationDetails');
-        const confirmationOk = document.getElementById('confirmationOk');
-        const feedbackForm = document.getElementById('feedbackForm');
-        
-        // Set up date picker
-        const pickupDate = document.getElementById('pickupDate');
-        if (pickupDate) {
-            const today = new Date();
-            const formattedDate = today.toISOString().split('T')[0];
-            pickupDate.min = formattedDate;
-            pickupDate.value = formattedDate;
-        }
-        
-        // Time option selection
-        timeOptions.forEach(option => {
-            option.addEventListener('click', function() {
-                // Remove selected class from all options
-                timeOptions.forEach(opt => opt.classList.remove('selected'));
+
+    <!-- Admin Button -->
+    <a href="admin-panel.html" class="admin-btn" title="Admin Panel">
+        <i class="fas fa-cog"></i>
+    </a>
+
+    <!-- Pickup Request Modal -->
+    <div id="pickupModal" class="modal">
+        <div class="modal-content">
+            <span class="close-modal">&times;</span>
+            <h2 style="color: var(--primary); margin-bottom: 15px;">Request FREE Pickup & Delivery</h2>
+            <p style="margin-bottom: 25px; font-size: 1.1rem;">We'll pick up your laundry and deliver it back - completely free!</p>
+            
+            <form id="pickupForm" style="display: flex; flex-direction: column; gap: 20px;">
+                <div class="form-group">
+                    <label for="pickupName">Full Name</label>
+                    <input type="text" id="pickupName" class="form-control" required>
+                </div>
                 
-                // Add selected class to clicked option
-                this.classList.add('selected');
+                <div class="form-group">
+                    <label for="pickupPhone">Phone Number</label>
+                    <input type="tel" id="pickupPhone" class="form-control" required>
+                </div>
                 
-                // Check the associated radio input
-                const radio = this.querySelector('input[type="radio"]');
-                if (radio) {
-                    radio.checked = true;
+                <div class="form-group">
+                    <label for="pickupAddress">Full Address</label>
+                    <textarea id="pickupAddress" class="form-control" rows="3" placeholder="House number, Street, Area, Landmark" required></textarea>
+                </div>
+                
+                <div class="form-group">
+                    <label>Preferred Pickup Time</label>
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px;">
+                        <div class="time-option" data-value="Morning (8AM-12PM)" style="background: var(--light); padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; text-align: center;">
+                            <input type="radio" name="timePreference" value="Morning (8AM-12PM)" hidden>
+                            <i class="far fa-clock"></i> Morning<br><small>8AM - 12PM</small>
+                        </div>
+                        <div class="time-option" data-value="Afternoon (12PM-4PM)" style="background: var(--light); padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; text-align: center;">
+                            <input type="radio" name="timePreference" value="Afternoon (12PM-4PM)" hidden>
+                            <i class="far fa-clock"></i> Afternoon<br><small>12PM - 4PM</small>
+                        </div>
+                        <div class="time-option" data-value="Evening (4PM-8PM)" style="background: var(--light); padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; text-align: center;">
+                            <input type="radio" name="timePreference" value="Evening (4PM-8PM)" hidden>
+                            <i class="far fa-clock"></i> Evening<br><small>4PM - 8PM</small>
+                        </div>
+                        <div class="time-option" data-value="Anytime" style="background: var(--light); padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; text-align: center;">
+                            <input type="radio" name="timePreference" value="Anytime" hidden>
+                            <i class="fas fa-infinity"></i> Anytime
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="form-group">
+                    <label for="pickupDate">Preferred Pickup Date</label>
+                    <input type="date" id="pickupDate" class="form-control" required>
+                </div>
+                
+                <div class="form-group">
+                    <label for="laundryItems">Laundry Items (Optional)</label>
+                    <textarea id="laundryItems" class="form-control" rows="3" placeholder="e.g., 5 shirts, 2 jeans, 1 suit..."></textarea>
+                </div>
+                
+                <button type="submit" class="btn" style="background: var(--primary); color: white; margin-top: 10px;">
+                    <i class="fas fa-calendar-check"></i> Confirm Pickup Request
+                </button>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Modal elements
+            const pickupModal = document.getElementById('pickupModal');
+            const pickupBadge = document.getElementById('pickupBadge');
+            const bookPickupBtn = document.getElementById('bookPickup');
+            const closeModal = document.querySelector('.close-modal');
+            const pickupForm = document.getElementById('pickupForm');
+            const feedbackForm = document.getElementById('feedbackForm');
+            const copyAccountBtn = document.getElementById('copyAccount');
+            
+            // Set today's date as min for pickup date
+            const pickupDate = document.getElementById('pickupDate');
+            if (pickupDate) {
+                const today = new Date().toISOString().split('T')[0];
+                pickupDate.min = today;
+                pickupDate.value = today;
+            }
+            
+            // Time selection functionality
+            document.querySelectorAll('.time-option').forEach(option => {
+                option.addEventListener('click', function() {
+                    document.querySelectorAll('.time-option').forEach(opt => {
+                        opt.style.borderColor = 'transparent';
+                        opt.style.background = 'var(--light)';
+                    });
+                    this.style.borderColor = 'var(--primary)';
+                    this.style.background = '#e3f2fd';
+                });
+            });
+            
+            // Open modal
+            function openPickupModal() {
+                pickupModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+            
+            // Close modal
+            function closePickupModal() {
+                pickupModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+                pickupForm.reset();
+                document.querySelectorAll('.time-option').forEach(opt => {
+                    opt.style.borderColor = 'transparent';
+                    opt.style.background = 'var(--light)';
+                });
+            }
+            
+            // Event listeners for opening modal
+            [pickupBadge, bookPickupBtn].forEach(element => {
+                if (element) {
+                    element.addEventListener('click', openPickupModal);
                 }
             });
-        });
-        
-        // Open modal
-        function openPickupModal() {
-            if (pickupModal) {
-                pickupModal.style.display = 'flex';
-                pickupModal.style.opacity = '1';
-                
-                // Reset to form view if coming from confirmation
-                if (confirmationMessage && confirmationMessage.style.display === 'block') {
-                    confirmationMessage.style.display = 'none';
-                    if (pickupForm) pickupForm.style.display = 'block';
-                }
-            }
-        }
-        
-        // Close modal
-        function closePickupModal() {
-            if (pickupModal) {
-                pickupModal.style.opacity = '0';
-                setTimeout(() => {
-                    pickupModal.style.display = 'none';
-                    // Reset form when closing
-                    if (pickupForm) {
-                        pickupForm.reset();
-                        if (confirmationMessage) confirmationMessage.style.display = 'none';
-                        if (pickupForm) pickupForm.style.display = 'block';
-                        document.querySelectorAll('.time-option').forEach(opt => 
-                            opt.classList.remove('selected'));
-                    }
-                }, 300);
-            }
-        }
-        
-        // Handle pickup form submission
-        if (pickupForm) {
+            
+            // Close modal events
+            closeModal.addEventListener('click', closePickupModal);
+            window.addEventListener('click', (e) => {
+                if (e.target === pickupModal) closePickupModal();
+            });
+            window.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') closePickupModal();
+            });
+            
+            // Handle pickup form submission
             pickupForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 // Validate time selection
-                const selectedTime = document.querySelector('.time-option.selected');
+                const selectedTime = document.querySelector('.time-option[style*="border-color: var(--primary)"]');
                 if (!selectedTime) {
                     alert('Please select a preferred pickup time');
                     return;
@@ -1206,24 +1279,13 @@
                 const pickupDateValue = document.getElementById('pickupDate').value;
                 const laundryItems = document.getElementById('laundryItems').value;
                 
-                // Format date for display
+                // Format date
                 const formattedDate = new Date(pickupDateValue).toLocaleDateString('en-US', {
                     weekday: 'long', 
                     year: 'numeric', 
                     month: 'long', 
                     day: 'numeric'
                 });
-                
-                // Update confirmation message
-                confirmationDetails.innerHTML = `
-                    We'll pick up your laundry on <strong>${formattedDate}</strong><br>
-                    during <strong>${timePreference}</strong><br><br>
-                    Our agent will call you 30 minutes before arrival
-                `;
-                
-                // Show confirmation
-                pickupForm.style.display = 'none';
-                confirmationMessage.style.display = 'block';
                 
                 // Create pickup data object
                 const pickupData = {
@@ -1239,7 +1301,7 @@
                     status: 'pending'
                 };
                 
-                // Save to localStorage for admin panel
+                // Save to localStorage
                 const existingPickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
                 existingPickups.push(pickupData);
                 localStorage.setItem('standardWashPickups', JSON.stringify(existingPickups));
@@ -1247,21 +1309,16 @@
                 // Create WhatsApp message
                 const whatsappMessage = `*PICKUP REQUEST*\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}\nDate: ${formattedDate}\nTime: ${timePreference}${laundryItems ? `\nItems: ${laundryItems}` : ''}`;
                 
-                // Send to admin system (if available)
-                if (typeof window.sendToAdminSystem !== 'undefined') {
-                    window.sendToAdminSystem(pickupData);
-                }
+                // Close modal and show confirmation
+                closePickupModal();
+                alert('✅ Pickup request sent successfully! We will contact you shortly.');
                 
-                // Open WhatsApp with pre-filled message after brief delay
-                setTimeout(() => {
-                    const whatsappUrl = `https://wa.me/2348161848922?text=${encodeURIComponent(whatsappMessage)}`;
-                    window.open(whatsappUrl, '_blank');
-                }, 1000);
+                // Open WhatsApp
+                const whatsappUrl = `https://wa.me/2348161848922?text=${encodeURIComponent(whatsappMessage)}`;
+                window.open(whatsappUrl, '_blank');
             });
-        }
-        
-        // Handle feedback form submission
-        if (feedbackForm) {
+            
+            // Handle feedback form submission
             feedbackForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
@@ -1282,7 +1339,7 @@
                     status: 'pending'
                 };
                 
-                // Save to localStorage for admin panel
+                // Save to localStorage
                 const existingFeedback = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
                 existingFeedback.push(feedbackData);
                 localStorage.setItem('standardWashFeedback', JSON.stringify(existingFeedback));
@@ -1290,264 +1347,49 @@
                 // Create WhatsApp message
                 const whatsappMessage = `*FEEDBACK*\n\nName: ${name}\nPhone: ${phone}\nService: ${service}\n\nMessage:\n${message}`;
                 
-                // Send to admin system (if available)
-                if (typeof window.sendToAdminSystem !== 'undefined') {
-                    window.sendToAdminSystem(feedbackData);
-                }
-                
-                // Show success message
-                alert('Thank you for your feedback! We will respond shortly.');
-                
-                // Reset form
+                // Reset form and show confirmation
                 this.reset();
+                alert('✅ Thank you for your feedback! We will respond shortly.');
                 
-                // Open WhatsApp with pre-filled message
+                // Open WhatsApp
                 const whatsappUrl = `https://wa.me/2348161848922?text=${encodeURIComponent(whatsappMessage)}`;
                 window.open(whatsappUrl, '_blank');
             });
-        }
-        
-        // Set up event listeners
-        if (pickupBadge) {
-            pickupBadge.addEventListener('click', openPickupModal);
-        }
-        
-        if (closeModal) {
-            closeModal.addEventListener('click', closePickupModal);
-        }
-        
-        if (confirmationOk) {
-            confirmationOk.addEventListener('click', closePickupModal);
-        }
-        
-        // Close modal when clicking outside
-        window.addEventListener('click', function(event) {
-            if (event.target === pickupModal) {
-                closePickupModal();
-            }
-        });
-        
-        // Escape key to close modal
-        window.addEventListener('keydown', function(e) {
-            if (e.key === 'Escape') {
-                closePickupModal();
-            }
-        });
-        
-        // Initialize admin panel functions
-        window.sendToAdminSystem = function(data) {
-            console.log('Data sent to admin system:', data);
-            // This function can be expanded to send data to a server
-            // For now, it's a placeholder for future integration
-        };
-        
-        // Copy account number functionality
-        const copyAccountBtn = document.getElementById('copyAccount');
-        if (copyAccountBtn) {
+            
+            // Copy account number functionality
             copyAccountBtn.addEventListener('click', function() {
                 const accountNumber = '9029518654';
                 navigator.clipboard.writeText(accountNumber).then(() => {
                     const originalText = this.innerHTML;
                     this.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                    this.style.background = '#28a745';
+                    this.style.background = 'var(--success)';
                     
                     setTimeout(() => {
                         this.innerHTML = originalText;
                         this.style.background = '';
                     }, 2000);
                 }).catch(err => {
-                    console.error('Failed to copy: ', err);
                     alert('Could not copy account number. Please select and copy manually.');
                 });
             });
-        }
-        
-        // Toggle reply section
-        window.toggleReply = function(button) {
-            const replySection = button.nextElementSibling;
-            const isVisible = replySection.style.display === 'block';
             
-            replySection.style.display = isVisible ? 'none' : 'block';
-            button.innerHTML = isVisible ? 
-                '<i class="fas fa-reply"></i> Reply' : 
-                '<i class="fas fa-times"></i> Cancel';
-        };
-    });
-    // Admin panel toggle
-const adminToggle = document.getElementById('adminToggle');
-const adminPanel = document.getElementById('adminPanel');
-
-if (adminToggle && adminPanel) {
-    adminToggle.addEventListener('click', function() {
-        const isVisible = adminPanel.style.display === 'block';
-        adminPanel.style.display = isVisible ? 'none' : 'block';
-        this.innerHTML = isVisible ? 
-            '<i class="fas fa-eye"></i> Show Admin Panel' : 
-            '<i class="fas fa-eye-slash"></i> Hide Panel';
-    });
-    
-    // Load feedback from localStorage
-    loadFeedbackData();
-}
-
-function loadFeedbackData() {
-    const feedbackList = document.getElementById('feedbackList');
-    if (!feedbackList) return;
-    
-    // Clear existing demo items
-    feedbackList.innerHTML = '';
-    
-    // Load from localStorage
-    const savedFeedback = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
-    const savedPickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
-    
-    // Add feedback items
-    savedFeedback.forEach(feedback => {
-        const date = new Date(feedback.timestamp).toLocaleDateString('en-US', {
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
+            // Smooth scrolling for anchor links
+            document.querySelectorAll('a[href^="#"]').forEach(anchor => {
+                anchor.addEventListener('click', function(e) {
+                    e.preventDefault();
+                    const targetId = this.getAttribute('href');
+                    if (targetId === '#') return;
+                    
+                    const targetElement = document.querySelector(targetId);
+                    if (targetElement) {
+                        window.scrollTo({
+                            top: targetElement.offsetTop - 80,
+                            behavior: 'smooth'
+                        });
+                    }
+                });
+            });
         });
-        
-        const item = document.createElement('div');
-        item.className = 'feedback-item';
-        item.innerHTML = `
-            <div class="feedback-header">
-                <span class="feedback-name">${feedback.name}</span>
-                <span class="feedback-date">${date}</span>
-            </div>
-            <span class="feedback-service">${feedback.service}</span>
-            <div class="feedback-message">
-                ${feedback.message}
-            </div>
-            <div class="phone-display" style="font-size: 0.9rem; color: #666; margin: 5px 0;">
-                <i class="fas fa-phone"></i> ${feedback.phone}
-            </div>
-            <button class="reply-btn" onclick="toggleReply(this)">
-                <i class="fas fa-reply"></i> Reply
-            </button>
-            <div class="reply-section">
-                <textarea class="reply-textarea" placeholder="Type your reply here..."></textarea>
-                <button class="reply-btn" onclick="sendReply(this, '${feedback.phone}')">
-                    <i class="fas fa-paper-plane"></i> Send Reply
-                </button>
-            </div>
-        `;
-        feedbackList.appendChild(item);
-    });
-    
-    // Add pickup requests
-    savedPickups.forEach(pickup => {
-        const date = new Date(pickup.timestamp).toLocaleDateString('en-US', {
-            weekday: 'short', 
-            month: 'short', 
-            day: 'numeric',
-            hour: '2-digit',
-            minute: '2-digit'
-        });
-        
-        const item = document.createElement('div');
-        item.className = 'feedback-item';
-        item.style.borderLeft = '4px solid #007bff';
-        item.innerHTML = `
-            <div class="feedback-header">
-                <span class="feedback-name">📦 PICKUP REQUEST - ${pickup.name}</span>
-                <span class="feedback-date">${date}</span>
-            </div>
-            <span class="feedback-service" style="background: #e3f2fd;">Pickup & Delivery</span>
-            <div class="feedback-message">
-                <strong>Address:</strong> ${pickup.address}<br>
-                <strong>Date:</strong> ${pickup.pickupDate}<br>
-                <strong>Time:</strong> ${pickup.timePreference}<br>
-                <strong>Items:</strong> ${pickup.laundryItems || 'Not specified'}
-            </div>
-            <div class="phone-display" style="font-size: 0.9rem; color: #666; margin: 5px 0;">
-                <i class="fas fa-phone"></i> ${pickup.phone}
-            </div>
-            <button class="reply-btn" onclick="callCustomer('${pickup.phone}')">
-                <i class="fas fa-phone"></i> Call Customer
-            </button>
-            <button class="reply-btn" onclick="markCompleted(this)" style="background: #28a745;">
-                <i class="fas fa-check"></i> Mark Completed
-            </button>
-        `;
-        feedbackList.appendChild(item);
-    });
-}
-</script>
-<!-- Pickup Request Modal -->
-<div id="pickupModal" class="modal">
-    <div class="modal-content">
-        <span class="close-modal">&times;</span>
-        <h2>Request FREE Pickup & Delivery</h2>
-        <p>We'll pick up your laundry and deliver it back - completely free!</p>
-        
-        <form id="pickupForm" class="modal-form">
-            <div class="form-group">
-                <label for="pickupName">Full Name</label>
-                <input type="text" id="pickupName" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="pickupPhone">Phone Number</label>
-                <input type="tel" id="pickupPhone" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="pickupAddress">Full Address</label>
-                <textarea id="pickupAddress" class="form-control" rows="3" placeholder="House number, Street, Area, Landmark" required></textarea>
-            </div>
-            
-            <div class="form-group">
-                <label>Preferred Pickup Time</label>
-                <div class="time-options" id="timeOptions">
-                    <div class="time-option" data-value="Morning (8AM-12PM)">
-                        <input type="radio" name="timePreference" value="Morning (8AM-12PM)" hidden>
-                        <i class="far fa-clock"></i> Morning<br><small>8AM - 12PM</small>
-                    </div>
-                    <div class="time-option" data-value="Afternoon (12PM-4PM)">
-                        <input type="radio" name="timePreference" value="Afternoon (12PM-4PM)" hidden>
-                        <i class="far fa-clock"></i> Afternoon<br><small>12PM - 4PM</small>
-                    </div>
-                    <div class="time-option" data-value="Evening (4PM-8PM)">
-                        <input type="radio" name="timePreference" value="Evening (4PM-8PM)" hidden>
-                        <i class="far fa-clock"></i> Evening<br><small>4PM - 8PM</small>
-                    </div>
-                    <div class="time-option" data-value="Anytime">
-                        <input type="radio" name="timePreference" value="Anytime" hidden>
-                        <i class="fas fa-infinity"></i> Anytime
-                    </div>
-                </div>
-            </div>
-            
-            <div class="form-group">
-                <label for="pickupDate">Preferred Pickup Date</label>
-                <input type="date" id="pickupDate" class="form-control" required>
-            </div>
-            
-            <div class="form-group">
-                <label for="laundryItems">Laundry Items (Optional)</label>
-                <textarea id="laundryItems" class="form-control" rows="3" placeholder="e.g., 5 shirts, 2 jeans, 1 suit..."></textarea>
-            </div>
-            
-            <button type="submit" class="submit-btn">
-                <i class="fas fa-calendar-check"></i> Confirm Pickup Request
-            </button>
-        </form>
-        
-        <div class="confirmation-message" id="confirmationMessage" style="display: none;">
-            <div class="confirmation-icon">
-                <i class="fas fa-check-circle"></i>
-            </div>
-            <h3>Pickup Request Confirmed!</h3>
-            <p id="confirmationDetails"></p>
-            <button id="confirmationOk" class="submit-btn" style="margin-top: 20px; background: var(--success);">
-                <i class="fas fa-thumbs-up"></i> OK, Thanks!
-            </button>
-        </div>
-    </div>
-</div>
- </body>
+    </script>
+</body>
 </html>
