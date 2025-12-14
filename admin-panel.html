@@ -1,0 +1,1492 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Login - Standard Wash Laundry</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #007bff;
+            --accent: #e67e22;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+        
+        /* Login Container */
+        .login-container {
+            width: 100%;
+            max-width: 450px;
+            padding: 20px;
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 15px 40px rgba(0, 0, 0, 0.15);
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: var(--gradient);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            color: var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-header h1 {
+            font-size: 2rem;
+            font-weight: 700;
+            margin-bottom: 10px;
+        }
+        
+        .login-header p {
+            opacity: 0.9;
+            font-size: 1.1rem;
+        }
+        
+        .login-body {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+            font-size: 1.1rem;
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+        }
+        
+        .password-container {
+            position: relative;
+        }
+        
+        .toggle-password {
+            position: absolute;
+            right: 15px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: none;
+            border: none;
+            color: var(--gray);
+            cursor: pointer;
+            font-size: 1.2rem;
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            gap: 10px;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 86, 179, 0.3);
+        }
+        
+        .login-btn:active {
+            transform: translateY(-1px);
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #f5c6cb;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(-10px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+        
+        .login-footer {
+            text-align: center;
+            margin-top: 25px;
+            padding-top: 20px;
+            border-top: 1px solid var(--light-gray);
+            color: var(--gray);
+        }
+        
+        .login-footer a {
+            color: var(--primary);
+            text-decoration: none;
+            font-weight: 500;
+        }
+        
+        .login-footer a:hover {
+            text-decoration: underline;
+        }
+        
+        /* Admin Panel Styles (hidden by default) */
+        .admin-panel {
+            display: none;
+            width: 100%;
+        }
+        
+        .admin-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            margin-bottom: 2rem;
+        }
+        
+        .admin-header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .admin-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .admin-logo-icon {
+            background: white;
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .admin-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .admin-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .admin-nav a:hover, .admin-nav a.active {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Main Container */
+        .admin-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            padding: 0 20px 40px;
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin-bottom: 40px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 30px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 70px;
+            height: 70px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2rem;
+            color: white;
+            flex-shrink: 0;
+        }
+        
+        .stat-info h3 {
+            font-size: 2.5rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: var(--gray);
+            font-size: 1.1rem;
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin-bottom: 30px;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+        
+        .tab-btn {
+            padding: 12px 30px;
+            background: var(--light);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--gray);
+        }
+        
+        .tab-btn:hover {
+            background: var(--light-gray);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        /* Tab Content */
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+            animation: fadeIn 0.5s ease;
+        }
+        
+        /* Table Styles */
+        .data-table {
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        .table-header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-header h3 {
+            font-size: 1.4rem;
+            font-weight: 600;
+        }
+        
+        .table-actions {
+            display: flex;
+            gap: 10px;
+        }
+        
+        .table-action-btn {
+            padding: 8px 15px;
+            background: rgba(255, 255, 255, 0.2);
+            border: none;
+            border-radius: 5px;
+            color: white;
+            cursor: pointer;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+        
+        .table-action-btn:hover {
+            background: rgba(255, 255, 255, 0.3);
+        }
+        
+        .table-container {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        thead {
+            background: var(--light);
+        }
+        
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            border-bottom: 2px solid var(--light-gray);
+        }
+        
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        tr:hover {
+            background: #f8f9ff;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        .status-processing { background: #cce5ff; color: #004085; }
+        .status-cancelled { background: #f8d7da; color: #721c24; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+        }
+        
+        .action-btn.view { background: var(--info); color: white; }
+        .action-btn.edit { background: var(--warning); color: white; }
+        .action-btn.delete { background: var(--danger); color: white; }
+        .action-btn.call { background: var(--success); color: white; }
+        .action-btn.whatsapp { background: #25D366; color: white; }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* No Data Message */
+        .no-data {
+            text-align: center;
+            padding: 50px 20px;
+            color: var(--gray);
+        }
+        
+        .no-data i {
+            font-size: 3rem;
+            margin-bottom: 20px;
+            opacity: 0.5;
+        }
+        
+        /* Modal */
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background: rgba(0, 0, 0, 0.7);
+            z-index: 1000;
+            justify-content: center;
+            align-items: center;
+            backdrop-filter: blur(5px);
+        }
+        
+        .modal-content {
+            background: white;
+            border-radius: 20px;
+            width: 90%;
+            max-width: 600px;
+            max-height: 90vh;
+            overflow-y: auto;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            animation: slideUp 0.4s ease;
+        }
+        
+        @keyframes slideUp {
+            from { transform: translateY(50px); opacity: 0; }
+            to { transform: translateY(0); opacity: 1; }
+        }
+        
+        .modal-header {
+            background: var(--gradient);
+            color: white;
+            padding: 25px 30px;
+            border-radius: 20px 20px 0 0;
+            display: flex;
+            justify-content: space-between;
+                align-items: center;
+        }
+        
+        .modal-header h3 {
+            font-size: 1.5rem;
+        }
+        
+        .close-modal {
+            background: none;
+            border: none;
+            color: white;
+            font-size: 1.8rem;
+            cursor: pointer;
+            width: 40px;
+            height: 40px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border-radius: 50%;
+            transition: all 0.3s;
+        }
+        
+        .close-modal:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        .modal-body {
+            padding: 30px;
+        }
+        
+        .detail-row {
+            display: flex;
+            margin-bottom: 20px;
+            padding-bottom: 15px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        .detail-label {
+            flex: 0 0 150px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .detail-value {
+            flex: 1;
+            color: var(--gray);
+        }
+        
+        /* Dashboard Summary */
+        .dashboard-summary {
+            background: white;
+            border-radius: 15px;
+            padding: 30px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            margin-bottom: 30px;
+        }
+        
+        .summary-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 20px;
+            margin-top: 20px;
+        }
+        
+        .summary-item {
+            text-align: center;
+            padding: 20px;
+            background: var(--light);
+            border-radius: 10px;
+        }
+        
+        .summary-item h4 {
+            font-size: 1.8rem;
+            font-weight: 700;
+            color: var(--primary);
+            margin-bottom: 5px;
+        }
+        
+        /* Responsive */
+        @media (max-width: 768px) {
+            .admin-header-container {
+                flex-direction: column;
+                gap: 20px;
+            }
+            
+            .admin-nav {
+                width: 100%;
+                justify-content: center;
+                flex-wrap: wrap;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .table-container {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 800px;
+            }
+            
+            .detail-row {
+                flex-direction: column;
+                gap: 5px;
+            }
+            
+            .detail-label {
+                flex: none;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h1>Admin Login</h1>
+                <p>Standard Wash Laundry Management System</p>
+            </div>
+            
+            <div class="login-body">
+                <div id="errorMessage" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> Invalid username or password
+                </div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter your username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-key"></i> Password</label>
+                        <div class="password-container">
+                            <input type="password" id="password" class="form-control" placeholder="Enter your password" required>
+                            <button type="button" class="toggle-password" id="togglePassword">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                        </div>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login to Admin Panel
+                    </button>
+                </form>
+                
+                <div class="login-footer">
+                    <p>Contact support if you forgot your credentials</p>
+                    <p><a href="index.html"><i class="fas fa-arrow-left"></i> Back to Website</a></p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel (Hidden until login) -->
+    <div id="adminPanel" class="admin-panel">
+        <header class="admin-header">
+            <div class="admin-header-container">
+                <div class="admin-logo">
+                    <div class="admin-logo-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h1>Standard Wash Admin Panel</h1>
+                </div>
+                <nav class="admin-nav">
+                    <span style="color: rgba(255,255,255,0.9); margin-right: 10px;">
+                        <i class="fas fa-user-circle"></i> Welcome, <span id="adminName">Admin</span>
+                    </span>
+                    <a href="index.html" class="active"><i class="fas fa-home"></i> Website</a>
+                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </nav>
+            </div>
+        </header>
+
+        <main class="admin-container">
+            <!-- Stats Cards -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalPickups">0</h3>
+                        <p>Total Pickups</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--success), #20c997);">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalFeedback">0</h3>
+                        <p>Feedback Received</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--warning), #fd7e14);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pendingPickups">0</h3>
+                        <p>Pending Pickups</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--info), #0dcaf0);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalCustomers">0</h3>
+                        <p>Total Customers</p>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Tabs -->
+            <div class="tabs">
+                <button class="tab-btn active" data-tab="dashboard"><i class="fas fa-chart-line"></i> Dashboard</button>
+                <button class="tab-btn" data-tab="pickups"><i class="fas fa-truck"></i> Pickup Requests</button>
+                <button class="tab-btn" data-tab="feedback"><i class="fas fa-comments"></i> Customer Feedback</button>
+                <button class="tab-btn" data-tab="customers"><i class="fas fa-users"></i> Customers</button>
+            </div>
+
+            <!-- Dashboard Tab -->
+            <div id="dashboard" class="tab-content active">
+                <div class="dashboard-summary">
+                    <h2>Today's Summary</h2>
+                    <div class="summary-grid">
+                        <div class="summary-item">
+                            <h4 id="todayPickups">0</h4>
+                            <p>Pickups Today</p>
+                        </div>
+                        <div class="summary-item">
+                            <h4 id="todayFeedback">0</h4>
+                            <p>Feedback Today</p>
+                        </div>
+                        <div class="summary-item">
+                            <h4 id="revenue">₦0</h4>
+                            <p>Estimated Revenue</p>
+                        </div>
+                        <div class="summary-item">
+                            <h4 id="completionRate">0%</h4>
+                            <p>Completion Rate</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Pickup Requests Tab -->
+            <div id="pickups" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-truck"></i> Pickup Requests</h3>
+                        <div class="table-actions">
+                            <button class="table-action-btn" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="table-action-btn" onclick="exportData('pickups')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="pickupsTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Phone</th>
+                                    <th>Address</th>
+                                    <th>Date/Time</th>
+                                    <th>Items</th>
+                                    <th>Status</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="pickupsBody">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customer Feedback Tab -->
+            <div id="feedback" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-comments"></i> Customer Feedback</h3>
+                        <div class="table-actions">
+                            <button class="table-action-btn" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="table-action-btn" onclick="exportData('feedback')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="feedbackTable">
+                            <thead>
+                                <tr>
+                                    <th>ID</th>
+                                    <th>Customer</th>
+                                    <th>Phone</th>
+                                    <th>Service</th>
+                                    <th>Message</th>
+                                    <th>Date</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="feedbackBody">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Customers Tab -->
+            <div id="customers" class="tab-content">
+                <div class="data-table">
+                    <div class="table-header">
+                        <h3><i class="fas fa-users"></i> Customers</h3>
+                        <div class="table-actions">
+                            <button class="table-action-btn" onclick="refreshData()">
+                                <i class="fas fa-sync-alt"></i> Refresh
+                            </button>
+                            <button class="table-action-btn" onclick="exportData('customers')">
+                                <i class="fas fa-download"></i> Export
+                            </button>
+                        </div>
+                    </div>
+                    <div class="table-container">
+                        <table id="customersTable">
+                            <thead>
+                                <tr>
+                                    <th>Customer</th>
+                                    <th>Phone</th>
+                                    <th>Pickups</th>
+                                    <th>Feedback</th>
+                                    <th>Total Spent</th>
+                                    <th>Last Activity</th>
+                                    <th>Actions</th>
+                                </tr>
+                            </thead>
+                            <tbody id="customersBody">
+                                <!-- Data will be populated here -->
+                            </tbody>
+                        </table>
+                    </div>
+                </div>
+            </div>
+        </main>
+
+        <!-- Detail Modal -->
+        <div id="detailModal" class="modal">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h3 id="modalTitle">Details</h3>
+                    <button class="close-modal">&times;</button>
+                </div>
+                <div class="modal-body" id="modalBody">
+                    <!-- Content will be populated here -->
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Login credentials (In a real app, this should be on the server)
+        const VALID_USERNAME = "the lordhope";
+        const VALID_PASSWORD = "AMENamen2";
+        
+        // Check if already logged in
+        document.addEventListener('DOMContentLoaded', function() {
+            const isLoggedIn = localStorage.getItem('sw_admin_logged_in') === 'true';
+            const savedUsername = localStorage.getItem('sw_admin_username');
+            
+            if (isLoggedIn && savedUsername === VALID_USERNAME) {
+                showAdminPanel(savedUsername);
+            } else {
+                showLoginPage();
+            }
+            
+            // Login form submission
+            document.getElementById('loginForm').addEventListener('submit', function(e) {
+                e.preventDefault();
+                
+                const username = document.getElementById('username').value.trim();
+                const password = document.getElementById('password').value;
+                const errorMessage = document.getElementById('errorMessage');
+                
+                // Validate credentials
+                if (username.toLowerCase() === VALID_USERNAME.toLowerCase() && password === VALID_PASSWORD) {
+                    // Login successful
+                    localStorage.setItem('sw_admin_logged_in', 'true');
+                    localStorage.setItem('sw_admin_username', username);
+                    showAdminPanel(username);
+                } else {
+                    // Login failed
+                    errorMessage.classList.add('show');
+                    document.getElementById('password').value = '';
+                    document.getElementById('password').focus();
+                    
+                    // Shake animation for error
+                    this.style.animation = 'shake 0.5s ease';
+                    setTimeout(() => {
+                        this.style.animation = '';
+                    }, 500);
+                }
+            });
+            
+            // Toggle password visibility
+            document.getElementById('togglePassword').addEventListener('click', function() {
+                const passwordInput = document.getElementById('password');
+                const icon = this.querySelector('i');
+                
+                if (passwordInput.type === 'password') {
+                    passwordInput.type = 'text';
+                    icon.classList.remove('fa-eye');
+                    icon.classList.add('fa-eye-slash');
+                } else {
+                    passwordInput.type = 'password';
+                    icon.classList.remove('fa-eye-slash');
+                    icon.classList.add('fa-eye');
+                }
+            });
+            
+            // Add shake animation for errors
+            const style = document.createElement('style');
+            style.textContent = `
+                @keyframes shake {
+                    0%, 100% { transform: translateX(0); }
+                    10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                    20%, 40%, 60%, 80% { transform: translateX(5px); }
+                }
+            `;
+            document.head.appendChild(style);
+        });
+        
+        function showLoginPage() {
+            document.getElementById('loginPage').style.display = 'block';
+            document.getElementById('adminPanel').style.display = 'none';
+        }
+        
+        function showAdminPanel(username) {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            document.getElementById('adminName').textContent = username;
+            
+            // Initialize admin panel functionality
+            initializeAdminPanel();
+        }
+        
+        function initializeAdminPanel() {
+            // Tab functionality
+            const tabBtns = document.querySelectorAll('.tab-btn');
+            const tabContents = document.querySelectorAll('.tab-content');
+            
+            tabBtns.forEach(btn => {
+                btn.addEventListener('click', function() {
+                    const tabId = this.dataset.tab;
+                    
+                    // Update active tab button
+                    tabBtns.forEach(b => b.classList.remove('active'));
+                    this.classList.add('active');
+                    
+                    // Show active tab content
+                    tabContents.forEach(content => {
+                        content.classList.remove('active');
+                        if (content.id === tabId) {
+                            content.classList.add('active');
+                        }
+                    });
+                });
+            });
+            
+            // Modal functionality
+            const detailModal = document.getElementById('detailModal');
+            const closeModalBtn = document.querySelector('.close-modal');
+            
+            function showDetailModal(title, content) {
+                document.getElementById('modalTitle').textContent = title;
+                document.getElementById('modalBody').innerHTML = content;
+                detailModal.style.display = 'flex';
+                document.body.style.overflow = 'hidden';
+            }
+            
+            function closeDetailModal() {
+                detailModal.style.display = 'none';
+                document.body.style.overflow = 'auto';
+            }
+            
+            closeModalBtn.addEventListener('click', closeDetailModal);
+            window.addEventListener('click', (e) => {
+                if (e.target === detailModal) closeDetailModal();
+            });
+            
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    localStorage.removeItem('sw_admin_logged_in');
+                    localStorage.removeItem('sw_admin_username');
+                    showLoginPage();
+                    // Clear form
+                    document.getElementById('loginForm').reset();
+                    document.getElementById('errorMessage').classList.remove('show');
+                }
+            });
+            
+            // Load and display data
+            function loadData() {
+                const pickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
+                const feedback = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
+                
+                // Update stats
+                document.getElementById('totalPickups').textContent = pickups.length;
+                document.getElementById('totalFeedback').textContent = feedback.length;
+                document.getElementById('pendingPickups').textContent = pickups.filter(p => p.status === 'pending').length;
+                
+                // Count unique customers
+                const customers = new Set();
+                pickups.forEach(p => customers.add(p.phone));
+                feedback.forEach(f => customers.add(f.phone));
+                document.getElementById('totalCustomers').textContent = customers.size;
+                
+                // Today's data
+                const today = new Date().toDateString();
+                const todayPickups = pickups.filter(p => new Date(p.timestamp).toDateString() === today);
+                const todayFeedback = feedback.filter(f => new Date(f.timestamp).toDateString() === today);
+                
+                document.getElementById('todayPickups').textContent = todayPickups.length;
+                document.getElementById('todayFeedback').textContent = todayFeedback.length;
+                
+                // Calculate revenue (estimated)
+                const estimatedRevenue = pickups.length * 3000; // Average ₦3,000 per pickup
+                document.getElementById('revenue').textContent = '₦' + estimatedRevenue.toLocaleString();
+                
+                // Completion rate
+                const completedPickups = pickups.filter(p => p.status === 'completed').length;
+                const completionRate = pickups.length > 0 ? Math.round((completedPickups / pickups.length) * 100) : 0;
+                document.getElementById('completionRate').textContent = completionRate + '%';
+                
+                // Populate pickups table
+                const pickupsBody = document.getElementById('pickupsBody');
+                pickupsBody.innerHTML = '';
+                
+                if (pickups.length === 0) {
+                    pickupsBody.innerHTML = `
+                        <tr>
+                            <td colspan="8" class="no-data">
+                                <i class="fas fa-truck"></i>
+                                <p>No pickup requests yet</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    pickups.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    pickups.forEach(pickup => {
+                        const date = new Date(pickup.timestamp);
+                        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${pickup.id.toString().slice(-6)}</td>
+                            <td>${pickup.name}</td>
+                            <td>${pickup.phone}</td>
+                            <td>${pickup.address.substring(0, 30)}...</td>
+                            <td>${formattedDate}</td>
+                            <td>${pickup.laundryItems || 'Not specified'}</td>
+                            <td><span class="status-badge status-${pickup.status || 'pending'}">${pickup.status || 'Pending'}</span></td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn view" onclick="viewPickup('${pickup.id}')" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="action-btn call" onclick="callCustomer('${pickup.phone}')" title="Call Customer">
+                                        <i class="fas fa-phone"></i>
+                                    </button>
+                                    <button class="action-btn whatsapp" onclick="whatsappCustomer('${pickup.phone}')" title="WhatsApp">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </button>
+                                    <button class="action-btn edit" onclick="updateStatus('${pickup.id}', 'completed')" title="Mark Completed">
+                                        <i class="fas fa-check"></i>
+                                    </button>
+                                    <button class="action-btn delete" onclick="deletePickup('${pickup.id}')" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        pickupsBody.appendChild(row);
+                    });
+                }
+                
+                // Populate feedback table
+                const feedbackBody = document.getElementById('feedbackBody');
+                feedbackBody.innerHTML = '';
+                
+                if (feedback.length === 0) {
+                    feedbackBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="no-data">
+                                <i class="fas fa-comments"></i>
+                                <p>No feedback yet</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    feedback.sort((a, b) => new Date(b.timestamp) - new Date(a.timestamp));
+                    
+                    feedback.forEach(item => {
+                        const date = new Date(item.timestamp);
+                        const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${item.id.toString().slice(-6)}</td>
+                            <td>${item.name}</td>
+                            <td>${item.phone}</td>
+                            <td>${item.service}</td>
+                            <td>${item.message.substring(0, 50)}...</td>
+                            <td>${formattedDate}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn view" onclick="viewFeedback('${item.id}')" title="View Details">
+                                        <i class="fas fa-eye"></i>
+                                    </button>
+                                    <button class="action-btn call" onclick="callCustomer('${item.phone}')" title="Call Customer">
+                                        <i class="fas fa-phone"></i>
+                                    </button>
+                                    <button class="action-btn whatsapp" onclick="whatsappCustomer('${item.phone}')" title="WhatsApp">
+                                        <i class="fas fa-whatsapp"></i>
+                                    </button>
+                                    <button class="action-btn delete" onclick="deleteFeedback('${item.id}')" title="Delete">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        feedbackBody.appendChild(row);
+                    });
+                }
+                
+                // Populate customers table
+                const customersBody = document.getElementById('customersBody');
+                customersBody.innerHTML = '';
+                
+                if (customers.size === 0) {
+                    customersBody.innerHTML = `
+                        <tr>
+                            <td colspan="7" class="no-data">
+                                <i class="fas fa-users"></i>
+                                <p>No customers yet</p>
+                            </td>
+                        </tr>
+                    `;
+                } else {
+                    const customerMap = {};
+                    
+                    // Group data by customer phone
+                    pickups.forEach(pickup => {
+                        if (!customerMap[pickup.phone]) {
+                            customerMap[pickup.phone] = {
+                                name: pickup.name,
+                                phone: pickup.phone,
+                                pickups: 0,
+                                feedback: 0,
+                                totalSpent: 0,
+                                lastActivity: new Date(pickup.timestamp)
+                            };
+                        }
+                        customerMap[pickup.phone].pickups++;
+                        customerMap[pickup.phone].lastActivity = new Date(Math.max(
+                            new Date(customerMap[pickup.phone].lastActivity),
+                            new Date(pickup.timestamp)
+                        ));
+                    });
+                    
+                    feedback.forEach(item => {
+                        if (!customerMap[item.phone]) {
+                            customerMap[item.phone] = {
+                                name: item.name,
+                                phone: item.phone,
+                                pickups: 0,
+                                feedback: 0,
+                                totalSpent: 0,
+                                lastActivity: new Date(item.timestamp)
+                            };
+                        }
+                        customerMap[item.phone].feedback++;
+                        customerMap[item.phone].lastActivity = new Date(Math.max(
+                            new Date(customerMap[item.phone].lastActivity),
+                            new Date(item.timestamp)
+                        ));
+                    });
+                    
+                    // Calculate total spent (estimated)
+                    Object.values(customerMap).forEach(customer => {
+                        customer.totalSpent = customer.pickups * 3000; // ₦3,000 per pickup
+                    });
+                    
+                    // Sort by last activity
+                    const sortedCustomers = Object.values(customerMap).sort((a, b) => b.lastActivity - a.lastActivity);
+                    
+                    sortedCustomers.forEach(customer => {
+                        const lastActivity = customer.lastActivity.toLocaleDateString();
+                        
+                        const row = document.createElement('tr');
+                        row.innerHTML = `
+                            <td>${customer.name}</td>
+                            <td>${customer.phone}</td>
+                            <td>${customer.pickups}</td>
+                            <td>${customer.feedback}</td>
+                            <td>₦${customer.totalSpent.toLocaleString()}</td>
+                            <td>${lastActivity}</td>
+                            <td>
+                                <div class="action-buttons">
+                                    <button class="action-btn call" onclick="callCustomer('${customer.phone}')" title="Call Customer">
+                                        <i class="fas fa-phone"></i>
+                                    </button>
+                                    <button class="action-btn whatsapp" onclick="whatsappCustomer('${customer.phone}')" title="WhatsApp">
+                                        <i class="fab fa-whatsapp"></i>
+                                    </button>
+                                </div>
+                            </td>
+                        `;
+                        customersBody.appendChild(row);
+                    });
+                }
+            }
+            
+            // Load data on panel initialization
+            loadData();
+            
+            // Make functions available globally
+            window.refreshData = loadData;
+            
+            window.viewPickup = function(id) {
+                const pickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
+                const pickup = pickups.find(p => p.id == id);
+                
+                if (pickup) {
+                    const date = new Date(pickup.timestamp);
+                    const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                    
+                    const content = `
+                        <div class="detail-row">
+                            <div class="detail-label">Customer Name:</div>
+                            <div class="detail-value">${pickup.name}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone Number:</div>
+                            <div class="detail-value">${pickup.phone}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Address:</div>
+                            <div class="detail-value">${pickup.address}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Pickup Date:</div>
+                            <div class="detail-value">${pickup.pickupDate}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Time Preference:</div>
+                            <div class="detail-value">${pickup.timePreference}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Laundry Items:</div>
+                            <div class="detail-value">${pickup.laundryItems || 'Not specified'}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Status:</div>
+                            <div class="detail-value">
+                                <span class="status-badge status-${pickup.status || 'pending'}">${pickup.status || 'Pending'}</span>
+                            </div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Requested On:</div>
+                            <div class="detail-value">${formattedDate}</div>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 30px;">
+                            <button onclick="callCustomer('${pickup.phone}')" style="flex: 1; padding: 12px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                <i class="fas fa-phone"></i> Call Customer
+                            </button>
+                            <button onclick="whatsappCustomer('${pickup.phone}')" style="flex: 1; padding: 12px; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                <i class="fab fa-whatsapp"></i> WhatsApp
+                            </button>
+                        </div>
+                    `;
+                    
+                    showDetailModal(`Pickup Request #${id.toString().slice(-6)}`, content);
+                }
+            };
+            
+            window.viewFeedback = function(id) {
+                const feedback = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
+                const item = feedback.find(f => f.id == id);
+                
+                if (item) {
+                    const date = new Date(item.timestamp);
+                    const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString();
+                    
+                    const content = `
+                        <div class="detail-row">
+                            <div class="detail-label">Customer Name:</div>
+                            <div class="detail-value">${item.name}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Phone Number:</div>
+                            <div class="detail-value">${item.phone}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Service:</div>
+                            <div class="detail-value">${item.service}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Message:</div>
+                            <div class="detail-value" style="background: #f8f9fa; padding: 15px; border-radius: 8px; margin-top: 5px;">${item.message}</div>
+                        </div>
+                        <div class="detail-row">
+                            <div class="detail-label">Submitted On:</div>
+                            <div class="detail-value">${formattedDate}</div>
+                        </div>
+                        <div style="display: flex; gap: 10px; margin-top: 30px;">
+                            <button onclick="callCustomer('${item.phone}')" style="flex: 1; padding: 12px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                <i class="fas fa-phone"></i> Call Customer
+                            </button>
+                            <button onclick="whatsappCustomer('${item.phone}')" style="flex: 1; padding: 12px; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                                <i class="fab fa-whatsapp"></i> Reply via WhatsApp
+                            </button>
+                        </div>
+                    `;
+                    
+                    showDetailModal(`Feedback #${id.toString().slice(-6)}`, content);
+                }
+            };
+            
+            window.callCustomer = function(phone) {
+                window.location.href = `tel:${phone}`;
+            };
+            
+            window.whatsappCustomer = function(phone) {
+                const message = `Hello, this is Standard Wash Laundry. We're following up on your request. How can we assist you?`;
+                const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+                window.open(whatsappUrl, '_blank');
+            };
+            
+            window.updateStatus = function(id, status) {
+                const pickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
+                const pickupIndex = pickups.findIndex(p => p.id == id);
+                
+                if (pickupIndex !== -1) {
+                    pickups[pickupIndex].status = status;
+                    localStorage.setItem('standardWashPickups', JSON.stringify(pickups));
+                    loadData();
+                    alert(`Pickup request marked as ${status}!`);
+                }
+            };
+            
+            window.deletePickup = function(id) {
+                if (confirm('Are you sure you want to delete this pickup request?')) {
+                    const pickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
+                    const updatedPickups = pickups.filter(p => p.id != id);
+                    localStorage.setItem('standardWashPickups', JSON.stringify(updatedPickups));
+                    loadData();
+                    alert('Pickup request deleted!');
+                }
+            };
+            
+            window.deleteFeedback = function(id) {
+                if (confirm('Are you sure you want to delete this feedback?')) {
+                    const feedback = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
+                    const updatedFeedback = feedback.filter(f => f.id != id);
+                    localStorage.setItem('standardWashFeedback', JSON.stringify(updatedFeedback));
+                    loadData();
+                    alert('Feedback deleted!');
+                }
+            };
+            
+            window.exportData = function(type) {
+                let data = [];
+                let filename = '';
+                
+                if (type === 'pickups') {
+                    data = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
+                    filename = 'pickup-requests-' + new Date().toISOString().split('T')[0] + '.json';
+                } else if (type === 'feedback') {
+                    data = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
+                    filename = 'customer-feedback-' + new Date().toISOString().split('T')[0] + '.json';
+                } else if (type === 'customers') {
+                    // Generate customers data
+                    const pickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
+                    const feedback = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
+                    const customerMap = {};
+                    
+                    pickups.forEach(pickup => {
+                        if (!customerMap[pickup.phone]) {
+                            customerMap[pickup.phone] = {
+                                name: pickup.name,
+                                phone: pickup.phone,
+                                pickups: 0,
+                                feedback: 0,
+                                totalSpent: 0,
+                                lastActivity: pickup.timestamp
+                            };
+                        }
+                        customerMap[pickup.phone].pickups++;
+                        customerMap[pickup.phone].lastActivity = new Date(Math.max(
+                            new Date(customerMap[pickup.phone].lastActivity),
+                            new Date(pickup.timestamp)
+                        )).toISOString();
+                    });
+                    
+                    feedback.forEach(item => {
+                        if (!customerMap[item.phone]) {
+                            customerMap[item.phone] = {
+                                name: item.name,
+                                phone: item.phone,
+                                pickups: 0,
+                                feedback: 0,
+                                totalSpent: 0,
+                                lastActivity: item.timestamp
+                            };
+                        }
+                        customerMap[item.phone].feedback++;
+                        customerMap[item.phone].lastActivity = new Date(Math.max(
+                            new Date(customerMap[item.phone].lastActivity),
+                            new Date(item.timestamp)
+                        )).toISOString();
+                    });
+                    
+                    Object.values(customerMap).forEach(customer => {
+                        customer.totalSpent = customer.pickups * 3000;
+                    });
+                    
+                    data = Object.values(customerMap);
+                    filename = 'customers-' + new Date().toISOString().split('T')[0] + '.json';
+                }
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = filename;
+                document.body.appendChild(a);
+                a.click();
+                document.body.removeChild(a);
+                URL.revokeObjectURL(url);
+                
+                alert(`Data exported as ${filename}`);
+            };
+        }
+    </script>
+</body>
+</html>
