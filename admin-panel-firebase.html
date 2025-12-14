@@ -1,0 +1,1095 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Panel - Standard Wash Laundry</title>
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
+    <style>
+        :root {
+            --primary: #0056b3;
+            --secondary: #007bff;
+            --accent: #e67e22;
+            --success: #28a745;
+            --warning: #ffc107;
+            --danger: #dc3545;
+            --info: #17a2b8;
+            --light: #f8f9fa;
+            --dark: #212529;
+            --gray: #6c757d;
+            --light-gray: #e9ecef;
+            --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+        }
+        
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+        }
+        
+        body {
+            background-color: #f5f7fa;
+            color: var(--dark);
+            line-height: 1.6;
+            min-height: 100vh;
+        }
+        
+        /* Login Styles */
+        .login-container {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            padding: 20px;
+            background: var(--gradient);
+        }
+        
+        .login-card {
+            background: white;
+            border-radius: 20px;
+            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.2);
+            width: 100%;
+            max-width: 450px;
+            overflow: hidden;
+        }
+        
+        .login-header {
+            background: var(--gradient);
+            color: white;
+            padding: 40px 30px;
+            text-align: center;
+        }
+        
+        .login-logo {
+            width: 80px;
+            height: 80px;
+            background: white;
+            color: var(--primary);
+            border-radius: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 2.5rem;
+            margin: 0 auto 20px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.1);
+        }
+        
+        .login-body {
+            padding: 40px;
+        }
+        
+        .form-group {
+            margin-bottom: 25px;
+        }
+        
+        .form-group label {
+            display: block;
+            margin-bottom: 10px;
+            font-weight: 600;
+            color: var(--dark);
+        }
+        
+        .form-control {
+            width: 100%;
+            padding: 15px 20px;
+            border: 2px solid var(--light-gray);
+            border-radius: 12px;
+            font-size: 1rem;
+            transition: all 0.3s;
+        }
+        
+        .form-control:focus {
+            outline: none;
+            border-color: var(--primary);
+            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+        }
+        
+        .login-btn {
+            width: 100%;
+            padding: 16px;
+            background: var(--gradient);
+            color: white;
+            border: none;
+            border-radius: 12px;
+            font-size: 1.1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            margin-top: 10px;
+        }
+        
+        .login-btn:hover {
+            transform: translateY(-3px);
+            box-shadow: 0 10px 25px rgba(0, 86, 179, 0.3);
+        }
+        
+        .error-message {
+            background: #f8d7da;
+            color: #721c24;
+            padding: 12px 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            display: none;
+            border-left: 4px solid #f5c6cb;
+        }
+        
+        .error-message.show {
+            display: block;
+            animation: fadeIn 0.3s ease;
+        }
+        
+        /* Admin Panel Styles */
+        .admin-panel {
+            display: none;
+        }
+        
+        .admin-header {
+            background: var(--gradient);
+            color: white;
+            padding: 1.5rem 0;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            position: sticky;
+            top: 0;
+            z-index: 100;
+        }
+        
+        .admin-header-container {
+            max-width: 1400px;
+            margin: 0 auto;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+        
+        .admin-logo {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+        
+        .admin-logo h1 {
+            font-size: 1.8rem;
+            font-weight: 700;
+        }
+        
+        .admin-logo-icon {
+            background: white;
+            color: var(--primary);
+            width: 50px;
+            height: 50px;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.5rem;
+        }
+        
+        .admin-nav {
+            display: flex;
+            gap: 20px;
+            align-items: center;
+        }
+        
+        .admin-nav a {
+            color: white;
+            text-decoration: none;
+            padding: 8px 20px;
+            border-radius: 20px;
+            transition: all 0.3s;
+            font-weight: 500;
+        }
+        
+        .admin-nav a:hover {
+            background: rgba(255, 255, 255, 0.2);
+        }
+        
+        /* Stats Cards */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 25px;
+            margin: 30px 20px;
+        }
+        
+        .stat-card {
+            background: white;
+            padding: 25px;
+            border-radius: 15px;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+            display: flex;
+            align-items: center;
+            gap: 20px;
+            transition: transform 0.3s ease;
+        }
+        
+        .stat-card:hover {
+            transform: translateY(-5px);
+        }
+        
+        .stat-icon {
+            width: 60px;
+            height: 60px;
+            border-radius: 15px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 1.8rem;
+            color: white;
+        }
+        
+        .stat-info h3 {
+            font-size: 2.2rem;
+            font-weight: 700;
+            margin-bottom: 5px;
+        }
+        
+        .stat-info p {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+        
+        /* Real-time notification */
+        .notification-badge {
+            position: fixed;
+            top: 20px;
+            right: 20px;
+            background: var(--accent);
+            color: white;
+            padding: 12px 20px;
+            border-radius: 10px;
+            box-shadow: 0 5px 15px rgba(230, 126, 34, 0.3);
+            display: none;
+            z-index: 1000;
+            animation: slideIn 0.3s ease;
+        }
+        
+        @keyframes slideIn {
+            from { transform: translateX(100px); opacity: 0; }
+            to { transform: translateX(0); opacity: 1; }
+        }
+        
+        /* Table Styles */
+        .table-container {
+            margin: 30px 20px;
+            background: white;
+            border-radius: 15px;
+            overflow: hidden;
+            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+        }
+        
+        .table-header {
+            background: var(--gradient);
+            color: white;
+            padding: 20px 30px;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
+        
+        .table-body {
+            max-height: 500px;
+            overflow-y: auto;
+        }
+        
+        table {
+            width: 100%;
+            border-collapse: collapse;
+        }
+        
+        th {
+            padding: 15px 20px;
+            text-align: left;
+            font-weight: 600;
+            color: var(--dark);
+            background: var(--light);
+            border-bottom: 2px solid var(--light-gray);
+            position: sticky;
+            top: 0;
+        }
+        
+        td {
+            padding: 15px 20px;
+            border-bottom: 1px solid var(--light-gray);
+        }
+        
+        tr:hover {
+            background: #f8f9ff;
+        }
+        
+        .status-badge {
+            padding: 5px 12px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 600;
+            display: inline-block;
+        }
+        
+        .status-pending { background: #fff3cd; color: #856404; }
+        .status-completed { background: #d4edda; color: #155724; }
+        
+        .action-buttons {
+            display: flex;
+            gap: 8px;
+        }
+        
+        .action-btn {
+            width: 35px;
+            height: 35px;
+            border: none;
+            border-radius: 8px;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            font-size: 0.9rem;
+            transition: all 0.3s;
+            color: white;
+        }
+        
+        .action-btn.view { background: var(--info); }
+        .action-btn.call { background: var(--success); }
+        .action-btn.whatsapp { background: #25D366; }
+        .action-btn.complete { background: var(--warning); }
+        .action-btn.delete { background: var(--danger); }
+        
+        .action-btn:hover {
+            transform: scale(1.1);
+        }
+        
+        /* Tabs */
+        .tabs {
+            display: flex;
+            gap: 10px;
+            margin: 30px 20px 0;
+            border-bottom: 2px solid var(--light-gray);
+            padding-bottom: 10px;
+        }
+        
+        .tab-btn {
+            padding: 12px 30px;
+            background: var(--light);
+            border: none;
+            border-radius: 8px;
+            font-size: 1rem;
+            font-weight: 600;
+            cursor: pointer;
+            transition: all 0.3s;
+            color: var(--gray);
+        }
+        
+        .tab-btn.active {
+            background: var(--primary);
+            color: white;
+        }
+        
+        .tab-content {
+            display: none;
+        }
+        
+        .tab-content.active {
+            display: block;
+        }
+        
+        /* Mobile Responsive */
+        @media (max-width: 768px) {
+            .stats-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .table-body {
+                overflow-x: auto;
+            }
+            
+            table {
+                min-width: 800px;
+            }
+            
+            .tabs {
+                flex-wrap: wrap;
+            }
+            
+            .admin-header-container {
+                flex-direction: column;
+                gap: 15px;
+                text-align: center;
+            }
+        }
+    </style>
+</head>
+<body>
+    <!-- Login Page -->
+    <div id="loginPage" class="login-container">
+        <div class="login-card">
+            <div class="login-header">
+                <div class="login-logo">
+                    <i class="fas fa-lock"></i>
+                </div>
+                <h1>Admin Login</h1>
+                <p>Standard Wash Laundry Management</p>
+            </div>
+            
+            <div class="login-body">
+                <div id="errorMessage" class="error-message">
+                    <i class="fas fa-exclamation-circle"></i> Invalid username or password
+                </div>
+                
+                <form id="loginForm">
+                    <div class="form-group">
+                        <label for="username"><i class="fas fa-user"></i> Username</label>
+                        <input type="text" id="username" class="form-control" placeholder="Enter username" required>
+                    </div>
+                    
+                    <div class="form-group">
+                        <label for="password"><i class="fas fa-key"></i> Password</label>
+                        <input type="password" id="password" class="form-control" placeholder="Enter password" required>
+                    </div>
+                    
+                    <button type="submit" class="login-btn">
+                        <i class="fas fa-sign-in-alt"></i> Login to Dashboard
+                    </button>
+                </form>
+                
+                <div style="text-align: center; margin-top: 25px; padding-top: 20px; border-top: 1px solid var(--light-gray);">
+                    <p style="color: var(--gray); font-size: 0.9rem;">
+                        <a href="index.html" style="color: var(--primary); text-decoration: none;">
+                            <i class="fas fa-arrow-left"></i> Back to Website
+                        </a>
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Admin Panel (Hidden until login) -->
+    <div id="adminPanel" class="admin-panel">
+        <!-- Real-time Notification -->
+        <div id="notification" class="notification-badge">
+            <i class="fas fa-bell"></i> New pickup request received!
+        </div>
+        
+        <!-- Header -->
+        <header class="admin-header">
+            <div class="admin-header-container">
+                <div class="admin-logo">
+                    <div class="admin-logo-icon">
+                        <i class="fas fa-cog"></i>
+                    </div>
+                    <h1>Standard Wash Dashboard</h1>
+                </div>
+                <nav class="admin-nav">
+                    <span style="color: rgba(255,255,255,0.9);">
+                        <i class="fas fa-user-circle"></i> Admin
+                    </span>
+                    <a href="index.html"><i class="fas fa-home"></i> Website</a>
+                    <a href="#" id="logoutBtn"><i class="fas fa-sign-out-alt"></i> Logout</a>
+                </nav>
+            </div>
+        </header>
+        
+        <!-- Tabs -->
+        <div class="tabs">
+            <button class="tab-btn active" data-tab="pickups">
+                <i class="fas fa-truck"></i> Pickup Requests
+            </button>
+            <button class="tab-btn" data-tab="feedback">
+                <i class="fas fa-comments"></i> Customer Feedback
+            </button>
+            <button class="tab-btn" data-tab="stats">
+                <i class="fas fa-chart-bar"></i> Statistics
+            </button>
+        </div>
+        
+        <!-- Pickups Tab -->
+        <div id="pickups" class="tab-content active">
+            <!-- Stats -->
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--primary), var(--secondary));">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalPickups">0</h3>
+                        <p>Total Pickups</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--warning), #fd7e14);">
+                        <i class="fas fa-clock"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="pendingPickups">0</h3>
+                        <p>Pending</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--success), #20c997);">
+                        <i class="fas fa-check-circle"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="completedPickups">0</h3>
+                        <p>Completed</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--info), #0dcaf0);">
+                        <i class="fas fa-users"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="todayPickups">0</h3>
+                        <p>Today's Pickups</p>
+                    </div>
+                </div>
+            </div>
+            
+            <!-- Pickups Table -->
+            <div class="table-container">
+                <div class="table-header">
+                    <h3><i class="fas fa-truck"></i> Live Pickup Requests</h3>
+                    <div style="display: flex; gap: 10px;">
+                        <button onclick="refreshData()" style="background: rgba(255,255,255,0.2); color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer;">
+                            <i class="fas fa-sync-alt"></i> Refresh
+                        </button>
+                    </div>
+                </div>
+                <div class="table-body">
+                    <table id="pickupsTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th>Address</th>
+                                <th>Date/Time</th>
+                                <th>Status</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="pickupsBody">
+                            <!-- Data will load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Feedback Tab -->
+        <div id="feedback" class="tab-content">
+            <div class="stats-grid">
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, var(--success), #20c997);">
+                        <i class="fas fa-comments"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="totalFeedback">0</h3>
+                        <p>Total Feedback</p>
+                    </div>
+                </div>
+                
+                <div class="stat-card">
+                    <div class="stat-icon" style="background: linear-gradient(135deg, #6f42c1, #6610f2);">
+                        <i class="fas fa-star"></i>
+                    </div>
+                    <div class="stat-info">
+                        <h3 id="todayFeedback">0</h3>
+                        <p>Today's Feedback</p>
+                    </div>
+                </div>
+            </div>
+            
+            <div class="table-container">
+                <div class="table-header">
+                    <h3><i class="fas fa-comments"></i> Customer Feedback</h3>
+                </div>
+                <div class="table-body">
+                    <table id="feedbackTable">
+                        <thead>
+                            <tr>
+                                <th>#</th>
+                                <th>Customer</th>
+                                <th>Phone</th>
+                                <th>Service</th>
+                                <th>Message</th>
+                                <th>Date</th>
+                                <th>Actions</th>
+                            </tr>
+                        </thead>
+                        <tbody id="feedbackBody">
+                            <!-- Data will load here -->
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+        
+        <!-- Statistics Tab -->
+        <div id="stats" class="tab-content">
+            <div style="margin: 30px 20px;">
+                <h2 style="color: var(--primary); margin-bottom: 20px;">Business Analytics</h2>
+                
+                <div class="stats-grid">
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #20c997, #198754);">
+                            <i class="fas fa-money-bill-wave"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="estimatedRevenue">₦0</h3>
+                            <p>Estimated Revenue</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #6f42c1, #6610f2);">
+                            <i class="fas fa-percentage"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="completionRate">0%</h3>
+                            <p>Completion Rate</p>
+                        </div>
+                    </div>
+                    
+                    <div class="stat-card">
+                        <div class="stat-icon" style="background: linear-gradient(135deg, #fd7e14, #dc3545);">
+                            <i class="fas fa-chart-line"></i>
+                        </div>
+                        <div class="stat-info">
+                            <h3 id="avgPickups">0</h3>
+                            <p>Avg Daily Pickups</p>
+                        </div>
+                    </div>
+                </div>
+                
+                <div style="background: white; padding: 25px; border-radius: 15px; margin-top: 30px; box-shadow: 0 8px 20px rgba(0,0,0,0.08);">
+                    <h3 style="color: var(--primary); margin-bottom: 20px;"><i class="fas fa-history"></i> Recent Activity</h3>
+                    <div id="recentActivity" style="max-height: 300px; overflow-y: auto;">
+                        <!-- Activity will load here -->
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtkZ0u3wZbOH1hFq3mHjRzUVXj0kGxWGA",
+            authDomain: "standardwashlaundry-a30fc.firebaseapp.com",
+            databaseURL: "https://standardwashlaundry-a30fc-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "standardwashlaundry-a30fc",
+            storageBucket: "standardwashlaundry-a30fc.appspot.com",
+            messagingSenderId: "172754749465",
+            appId: "1:172754749465:web:0b73e757a98710bd7bf585"
+        };
+        
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+        
+        // Login credentials
+        const VALID_USERNAME = "the lordhope";
+        const VALID_PASSWORD = "AMENamen2";
+        
+        // Login functionality
+        document.getElementById('loginForm').addEventListener('submit', function(e) {
+            e.preventDefault();
+            
+            const username = document.getElementById('username').value.trim();
+            const password = document.getElementById('password').value;
+            const errorMessage = document.getElementById('errorMessage');
+            
+            // Validate credentials
+            if (username.toLowerCase() === VALID_USERNAME.toLowerCase() && password === VALID_PASSWORD) {
+                // Login successful
+                localStorage.setItem('sw_admin_logged_in', 'true');
+                localStorage.setItem('sw_admin_username', username);
+                showAdminPanel();
+            } else {
+                // Login failed
+                errorMessage.classList.add('show');
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
+                
+                // Shake animation
+                this.style.animation = 'shake 0.5s ease';
+                setTimeout(() => this.style.animation = '', 500);
+            }
+        });
+        
+        // Check if already logged in
+        if (localStorage.getItem('sw_admin_logged_in') === 'true') {
+            showAdminPanel();
+        } else {
+            document.getElementById('loginPage').style.display = 'flex';
+        }
+        
+        function showAdminPanel() {
+            document.getElementById('loginPage').style.display = 'none';
+            document.getElementById('adminPanel').style.display = 'block';
+            initializeAdminPanel();
+        }
+        
+        function initializeAdminPanel() {
+            // Tab functionality
+            document.querySelectorAll('.tab-btn').forEach(btn => {
+                btn.addEventListener('click', function() {
+                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
+                    
+                    this.classList.add('active');
+                    document.getElementById(this.dataset.tab).classList.add('active');
+                });
+            });
+            
+            // Logout functionality
+            document.getElementById('logoutBtn').addEventListener('click', function() {
+                if (confirm('Are you sure you want to logout?')) {
+                    localStorage.removeItem('sw_admin_logged_in');
+                    localStorage.removeItem('sw_admin_username');
+                    location.reload();
+                }
+            });
+            
+            // Listen for real-time updates
+            listenToPickups();
+            listenToFeedback();
+        }
+        
+        let lastPickupCount = 0;
+        
+        function listenToPickups() {
+            database.ref('pickups').orderByChild('timestamp').on('value', (snapshot) => {
+                const pickups = [];
+                let total = 0;
+                let pending = 0;
+                let completed = 0;
+                let today = 0;
+                const todayDate = new Date().toDateString();
+                
+                snapshot.forEach((childSnapshot) => {
+                    const pickup = childSnapshot.val();
+                    pickup.key = childSnapshot.key;
+                    pickups.unshift(pickup); // Newest first
+                    
+                    total++;
+                    if (pickup.status === 'pending') pending++;
+                    if (pickup.status === 'completed') completed++;
+                    
+                    const pickupDate = new Date(pickup.timestamp).toDateString();
+                    if (pickupDate === todayDate) today++;
+                });
+                
+                // Update stats
+                document.getElementById('totalPickups').textContent = total;
+                document.getElementById('pendingPickups').textContent = pending;
+                document.getElementById('completedPickups').textContent = completed;
+                document.getElementById('todayPickups').textContent = today;
+                
+                // Update table
+                updatePickupTable(pickups);
+                
+                // Show notification for new pickups
+                if (total > lastPickupCount && lastPickupCount > 0) {
+                    showNotification('New pickup request received!');
+                }
+                lastPickupCount = total;
+                
+                // Update statistics
+                updateStatistics(pickups);
+            });
+        }
+        
+        function listenToFeedback() {
+            database.ref('feedback').orderByChild('timestamp').on('value', (snapshot) => {
+                const feedback = [];
+                let total = 0;
+                let today = 0;
+                const todayDate = new Date().toDateString();
+                
+                snapshot.forEach((childSnapshot) => {
+                    const item = childSnapshot.val();
+                    item.key = childSnapshot.key;
+                    feedback.unshift(item);
+                    
+                    total++;
+                    const itemDate = new Date(item.timestamp).toDateString();
+                    if (itemDate === todayDate) today++;
+                });
+                
+                document.getElementById('totalFeedback').textContent = total;
+                document.getElementById('todayFeedback').textContent = today;
+                updateFeedbackTable(feedback);
+            });
+        }
+        
+        function updatePickupTable(pickups) {
+            const tbody = document.getElementById('pickupsBody');
+            tbody.innerHTML = '';
+            
+            if (pickups.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: var(--gray);">
+                            <i class="fas fa-truck" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px; display: block;"></i>
+                            No pickup requests yet
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            pickups.forEach((pickup, index) => {
+                const date = new Date(pickup.timestamp);
+                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${pickup.name}</strong></td>
+                    <td>${pickup.phone}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${pickup.address}
+                    </td>
+                    <td>${formattedDate}</td>
+                    <td>
+                        <span class="status-badge status-${pickup.status || 'pending'}">
+                            ${pickup.status || 'Pending'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" onclick="viewPickup('${pickup.key}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn call" onclick="callCustomer('${pickup.phone}')" title="Call Customer">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="action-btn whatsapp" onclick="whatsappCustomer('${pickup.phone}')" title="WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                            <button class="action-btn complete" onclick="updateStatus('${pickup.key}', 'completed')" title="Mark Completed">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            <button class="action-btn delete" onclick="deletePickup('${pickup.key}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function updateFeedbackTable(feedback) {
+            const tbody = document.getElementById('feedbackBody');
+            tbody.innerHTML = '';
+            
+            if (feedback.length === 0) {
+                tbody.innerHTML = `
+                    <tr>
+                        <td colspan="7" style="text-align: center; padding: 40px; color: var(--gray);">
+                            <i class="fas fa-comments" style="font-size: 3rem; opacity: 0.3; margin-bottom: 15px; display: block;"></i>
+                            No feedback yet
+                        </td>
+                    </tr>
+                `;
+                return;
+            }
+            
+            feedback.forEach((item, index) => {
+                const date = new Date(item.timestamp);
+                const formattedDate = date.toLocaleDateString();
+                
+                const row = document.createElement('tr');
+                row.innerHTML = `
+                    <td>${index + 1}</td>
+                    <td><strong>${item.name}</strong></td>
+                    <td>${item.phone}</td>
+                    <td>${item.service}</td>
+                    <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap;">
+                        ${item.message}
+                    </td>
+                    <td>${formattedDate}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" onclick="viewFeedback('${item.key}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn call" onclick="callCustomer('${item.phone}')" title="Call Customer">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="action-btn whatsapp" onclick="whatsappCustomer('${item.phone}')" title="Reply via WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </td>
+                `;
+                tbody.appendChild(row);
+            });
+        }
+        
+        function updateStatistics(pickups) {
+            // Estimated revenue (₦3,000 average per pickup)
+            const estimatedRevenue = pickups.length * 3000;
+            document.getElementById('estimatedRevenue').textContent = '₦' + estimatedRevenue.toLocaleString();
+            
+            // Completion rate
+            const completed = pickups.filter(p => p.status === 'completed').length;
+            const completionRate = pickups.length > 0 ? Math.round((completed / pickups.length) * 100) : 0;
+            document.getElementById('completionRate').textContent = completionRate + '%';
+            
+            // Average daily pickups (last 7 days)
+            const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+            const recentPickups = pickups.filter(p => p.timestamp > oneWeekAgo);
+            const avgDaily = Math.round(recentPickups.length / 7);
+            document.getElementById('avgPickups').textContent = avgDaily;
+            
+            // Recent activity
+            updateRecentActivity(pickups.slice(0, 10));
+        }
+        
+        function updateRecentActivity(pickups) {
+            const container = document.getElementById('recentActivity');
+            container.innerHTML = '';
+            
+            pickups.forEach(pickup => {
+                const date = new Date(pickup.timestamp);
+                const timeAgo = getTimeAgo(date);
+                
+                const activity = document.createElement('div');
+                activity.style.cssText = 'padding: 12px; border-bottom: 1px solid #eee; display: flex; align-items: center; gap: 15px;';
+                activity.innerHTML = `
+                    <div style="width: 40px; height: 40px; background: #e3f2fd; border-radius: 50%; display: flex; align-items: center; justify-content: center; color: #1976d2;">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div style="flex: 1;">
+                        <div style="font-weight: 600;">${pickup.name}</div>
+                        <div style="font-size: 0.9rem; color: #666;">${pickup.address.substring(0, 40)}...</div>
+                    </div>
+                    <div style="font-size: 0.85rem; color: #999;">${timeAgo}</div>
+                `;
+                container.appendChild(activity);
+            });
+        }
+        
+        function getTimeAgo(date) {
+            const seconds = Math.floor((new Date() - date) / 1000);
+            
+            let interval = Math.floor(seconds / 31536000);
+            if (interval >= 1) return interval + ' year' + (interval > 1 ? 's' : '') + ' ago';
+            
+            interval = Math.floor(seconds / 2592000);
+            if (interval >= 1) return interval + ' month' + (interval > 1 ? 's' : '') + ' ago';
+            
+            interval = Math.floor(seconds / 86400);
+            if (interval >= 1) return interval + ' day' + (interval > 1 ? 's' : '') + ' ago';
+            
+            interval = Math.floor(seconds / 3600);
+            if (interval >= 1) return interval + ' hour' + (interval > 1 ? 's' : '') + ' ago';
+            
+            interval = Math.floor(seconds / 60);
+            if (interval >= 1) return interval + ' minute' + (interval > 1 ? 's' : '') + ' ago';
+            
+            return 'just now';
+        }
+        
+        function showNotification(message) {
+            const notification = document.getElementById('notification');
+            notification.innerHTML = `<i class="fas fa-bell"></i> ${message}`;
+            notification.style.display = 'block';
+            
+            // Play notification sound
+            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
+            audio.volume = 0.3;
+            audio.play().catch(e => console.log('Audio play failed:', e));
+            
+            // Auto-hide after 5 seconds
+            setTimeout(() => {
+                notification.style.display = 'none';
+            }, 5000);
+        }
+        
+        // Action functions
+        function viewPickup(key) {
+            database.ref('pickups/' + key).once('value').then(snapshot => {
+                const pickup = snapshot.val();
+                if (pickup) {
+                    const details = `
+                        <strong>Name:</strong> ${pickup.name}<br>
+                        <strong>Phone:</strong> ${pickup.phone}<br>
+                        <strong>Address:</strong> ${pickup.address}<br>
+                        <strong>Pickup Date:</strong> ${pickup.pickupDate}<br>
+                        <strong>Time Preference:</strong> ${pickup.timePreference}<br>
+                        <strong>Items:</strong> ${pickup.laundryItems || 'Not specified'}<br>
+                        <strong>Status:</strong> <span class="status-badge status-${pickup.status || 'pending'}">${pickup.status || 'Pending'}</span>
+                    `;
+                    alert(details);
+                }
+            });
+        }
+        
+        function viewFeedback(key) {
+            database.ref('feedback/' + key).once('value').then(snapshot => {
+                const feedback = snapshot.val();
+                if (feedback) {
+                    const details = `
+                        <strong>Name:</strong> ${feedback.name}<br>
+                        <strong>Phone:</strong> ${feedback.phone}<br>
+                        <strong>Service:</strong> ${feedback.service}<br>
+                        <strong>Message:</strong><br>${feedback.message}
+                    `;
+                    alert(details);
+                }
+            });
+        }
+        
+        function callCustomer(phone) {
+            window.location.href = `tel:${phone}`;
+        }
+        
+        function whatsappCustomer(phone) {
+            const message = `Hello, this is Standard Wash Laundry. We're following up on your request. How can we assist you?`;
+            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+            window.open(whatsappUrl, '_blank');
+        }
+        
+        function updateStatus(key, status) {
+            if (confirm('Mark this pickup as completed?')) {
+                database.ref('pickups/' + key).update({ status: status })
+                    .then(() => alert('Pickup marked as completed!'))
+                    .catch(error => alert('Error: ' + error.message));
+            }
+        }
+        
+        function deletePickup(key) {
+            if (confirm('Are you sure you want to delete this pickup request?')) {
+                database.ref('pickups/' + key).remove()
+                    .then(() => alert('Pickup deleted!'))
+                    .catch(error => alert('Error: ' + error.message));
+            }
+        }
+        
+        function refreshData() {
+            location.reload();
+        }
+        
+        // Add shake animation CSS
+        const style = document.createElement('style');
+        style.textContent = `
+            @keyframes shake {
+                0%, 100% { transform: translateX(0); }
+                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+                20%, 40%, 60%, 80% { transform: translateX(5px); }
+            }
+        `;
+        document.head.appendChild(style);
+    </script>
+</body>
+</html>
