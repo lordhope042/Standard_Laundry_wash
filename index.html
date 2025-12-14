@@ -3,6 +3,15 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <!-- Add these to your <head> section -->
+<meta name="description" content="Professional laundry services in Port Harcourt. Free pickup & delivery. Wash, dry clean, ironing, sneakers cleaning, and industrial laundry.">
+<meta name="keywords" content="laundry Port Harcourt, dry cleaning, laundry service, pickup delivery, industrial washing, sneakers cleaning">
+<meta name="author" content="Standard Wash Laundry">
+<meta property="og:title" content="Standard Wash Laundry - Professional Laundry Services">
+<meta property="og:description" content="From daily washes to industrial cleaning in Port Harcourt">
+<meta property="og:image" content="https://images.unsplash.com/photo-1601142637085-3238c2b9c83c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80">
+<meta property="og:url" content="https://standardwashlaundry.com">
+<meta name="twitter:card" content="summary_large_image">
     <title>Standard Wash Laundry - Professional Laundry Services</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
     <style>
@@ -1364,6 +1373,109 @@
                 '<i class="fas fa-times"></i> Cancel';
         };
     });
+    // Admin panel toggle
+const adminToggle = document.getElementById('adminToggle');
+const adminPanel = document.getElementById('adminPanel');
+
+if (adminToggle && adminPanel) {
+    adminToggle.addEventListener('click', function() {
+        const isVisible = adminPanel.style.display === 'block';
+        adminPanel.style.display = isVisible ? 'none' : 'block';
+        this.innerHTML = isVisible ? 
+            '<i class="fas fa-eye"></i> Show Admin Panel' : 
+            '<i class="fas fa-eye-slash"></i> Hide Panel';
+    });
+    
+    // Load feedback from localStorage
+    loadFeedbackData();
+}
+
+function loadFeedbackData() {
+    const feedbackList = document.getElementById('feedbackList');
+    if (!feedbackList) return;
+    
+    // Clear existing demo items
+    feedbackList.innerHTML = '';
+    
+    // Load from localStorage
+    const savedFeedback = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
+    const savedPickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
+    
+    // Add feedback items
+    savedFeedback.forEach(feedback => {
+        const date = new Date(feedback.timestamp).toLocaleDateString('en-US', {
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        const item = document.createElement('div');
+        item.className = 'feedback-item';
+        item.innerHTML = `
+            <div class="feedback-header">
+                <span class="feedback-name">${feedback.name}</span>
+                <span class="feedback-date">${date}</span>
+            </div>
+            <span class="feedback-service">${feedback.service}</span>
+            <div class="feedback-message">
+                ${feedback.message}
+            </div>
+            <div class="phone-display" style="font-size: 0.9rem; color: #666; margin: 5px 0;">
+                <i class="fas fa-phone"></i> ${feedback.phone}
+            </div>
+            <button class="reply-btn" onclick="toggleReply(this)">
+                <i class="fas fa-reply"></i> Reply
+            </button>
+            <div class="reply-section">
+                <textarea class="reply-textarea" placeholder="Type your reply here..."></textarea>
+                <button class="reply-btn" onclick="sendReply(this, '${feedback.phone}')">
+                    <i class="fas fa-paper-plane"></i> Send Reply
+                </button>
+            </div>
+        `;
+        feedbackList.appendChild(item);
+    });
+    
+    // Add pickup requests
+    savedPickups.forEach(pickup => {
+        const date = new Date(pickup.timestamp).toLocaleDateString('en-US', {
+            weekday: 'short', 
+            month: 'short', 
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+        
+        const item = document.createElement('div');
+        item.className = 'feedback-item';
+        item.style.borderLeft = '4px solid #007bff';
+        item.innerHTML = `
+            <div class="feedback-header">
+                <span class="feedback-name">📦 PICKUP REQUEST - ${pickup.name}</span>
+                <span class="feedback-date">${date}</span>
+            </div>
+            <span class="feedback-service" style="background: #e3f2fd;">Pickup & Delivery</span>
+            <div class="feedback-message">
+                <strong>Address:</strong> ${pickup.address}<br>
+                <strong>Date:</strong> ${pickup.pickupDate}<br>
+                <strong>Time:</strong> ${pickup.timePreference}<br>
+                <strong>Items:</strong> ${pickup.laundryItems || 'Not specified'}
+            </div>
+            <div class="phone-display" style="font-size: 0.9rem; color: #666; margin: 5px 0;">
+                <i class="fas fa-phone"></i> ${pickup.phone}
+            </div>
+            <button class="reply-btn" onclick="callCustomer('${pickup.phone}')">
+                <i class="fas fa-phone"></i> Call Customer
+            </button>
+            <button class="reply-btn" onclick="markCompleted(this)" style="background: #28a745;">
+                <i class="fas fa-check"></i> Mark Completed
+            </button>
+        `;
+        feedbackList.appendChild(item);
+    });
+}
 </script>
 <!-- Pickup Request Modal -->
 <div id="pickupModal" class="modal">
