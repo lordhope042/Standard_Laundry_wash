@@ -1155,635 +1155,707 @@
             </div>
         </div>
     </div>
-
-    <script>
-        // Firebase configuration
-        const firebaseConfig = {
-            apiKey: "AIzaSyBtkZ0u3wZbOH1hFq3mHjRzUVXj0kGxWGA",
-            authDomain: "standardwashlaundry-a30fc.firebaseapp.com",
-            databaseURL: "https://standardwashlaundry-a30fc-default-rtdb.asia-southeast1.firebasedatabase.app",
-            projectId: "standardwashlaundry-a30fc",
-            storageBucket: "standardwashlaundry-a30fc.appspot.com",
-            messagingSenderId: "172754749465",
-            appId: "1:172754749465:web:0b73e757a98710bd7bf585"
-        };
+<script>
+    // Firebase configuration
+    const firebaseConfig = {
+        apiKey: "AIzaSyBtkZ0u3wZbOH1hFq3mHjRzUVXj0kGxWGA",
+        authDomain: "standardwashlaundry-a30fc.firebaseapp.com",
+        databaseURL: "https://standardwashlaundry-a30fc-default-rtdb.asia-southeast1.firebasedatabase.app",
+        projectId: "standardwashlaundry-a30fc",
+        storageBucket: "standardwashlaundry-a30fc.appspot.com",
+        messagingSenderId: "172754749465",
+        appId: "1:172754749465:web:0b73e757a98710bd7bf585"
+    };
+    
+    // Initialize Firebase
+    firebase.initializeApp(firebaseConfig);
+    const database = firebase.database();
+    const auth = firebase.auth();
+    
+    // Login credentials
+    const VALID_USERNAME = "the lordhope";
+    const VALID_PASSWORD = "AMENamen2";
+    
+    // Global variables
+    let allPickups = [];
+    let allFeedback = [];
+    let lastPickupCount = 0;
+    let lastFeedbackCount = 0;
+    
+    // Login functionality
+    document.getElementById('loginForm').addEventListener('submit', function(e) {
+        e.preventDefault();
         
-        // Initialize Firebase
-        firebase.initializeApp(firebaseConfig);
-        const database = firebase.database();
-        const auth = firebase.auth();
+        const username = document.getElementById('username').value.trim();
+        const password = document.getElementById('password').value;
+        const errorMessage = document.getElementById('errorMessage');
+        const submitBtn = this.querySelector('button[type="submit"]');
+        const originalText = submitBtn.innerHTML;
         
-        // Login credentials
-        const VALID_USERNAME = "the lordhope";
-        const VALID_PASSWORD = "AMENamen2";
+        // Show loading
+        submitBtn.innerHTML = '<span class="loading"></span> Authenticating...';
+        submitBtn.disabled = true;
         
-        // Global variables
-        let allPickups = [];
-        let allFeedback = [];
-        let lastPickupCount = 0;
-        let lastFeedbackCount = 0;
-        
-        // Login functionality
-        document.getElementById('loginForm').addEventListener('submit', function(e) {
-            e.preventDefault();
-            
-            const username = document.getElementById('username').value.trim();
-            const password = document.getElementById('password').value;
-            const errorMessage = document.getElementById('errorMessage');
-            const submitBtn = this.querySelector('button[type="submit"]');
-            const originalText = submitBtn.innerHTML;
-            
-            // Show loading
-            submitBtn.innerHTML = '<span class="loading"></span> Authenticating...';
-            submitBtn.disabled = true;
-            
-            // Simulate API delay for better UX
-            setTimeout(() => {
-                // Validate credentials
-                if (username.toLowerCase() === VALID_USERNAME.toLowerCase() && password === VALID_PASSWORD) {
-                    // Login successful
-                    localStorage.setItem('sw_admin_logged_in', 'true');
-                    localStorage.setItem('sw_admin_username', username);
-                    showAdminPanel();
-                } else {
-                    // Login failed
-                    errorMessage.classList.add('show');
-                    document.getElementById('password').value = '';
-                    document.getElementById('password').focus();
-                    
-                    // Shake animation
-                    this.style.animation = 'shake 0.5s ease';
-                    setTimeout(() => this.style.animation = '', 500);
-                }
+        // Simulate API delay for better UX
+        setTimeout(() => {
+            // Validate credentials
+            if (username.toLowerCase() === VALID_USERNAME.toLowerCase() && password === VALID_PASSWORD) {
+                // Login successful
+                localStorage.setItem('sw_admin_logged_in', 'true');
+                localStorage.setItem('sw_admin_username', username);
+                showAdminPanel();
+            } else {
+                // Login failed
+                errorMessage.classList.add('show');
+                document.getElementById('password').value = '';
+                document.getElementById('password').focus();
                 
-                // Reset button
-                submitBtn.innerHTML = originalText;
-                submitBtn.disabled = false;
-            }, 1000);
-        });
-        
-        // Check if already logged in
-        if (localStorage.getItem('sw_admin_logged_in') === 'true') {
-            const username = localStorage.getItem('sw_admin_username') || 'Admin';
-            document.getElementById('currentUser').textContent = username;
-            showAdminPanel();
-        } else {
-            document.getElementById('loginPage').style.display = 'flex';
-        }
-        
-        function showAdminPanel() {
-            document.getElementById('loginPage').style.display = 'none';
-            document.getElementById('adminPanel').style.display = 'block';
-            initializeAdminPanel();
-        }
-        
-        function initializeAdminPanel() {
-            // Tab functionality
-            document.querySelectorAll('.tab-btn').forEach(btn => {
-                btn.addEventListener('click', function() {
-                    document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
-                    document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
-                    
-                    this.classList.add('active');
-                    document.getElementById(this.dataset.tab).classList.add('active');
-                });
-            });
-            
-            // Logout functionality
-            document.getElementById('logoutBtn').addEventListener('click', function() {
-                if (confirm('Are you sure you want to logout?')) {
-                    localStorage.removeItem('sw_admin_logged_in');
-                    localStorage.removeItem('sw_admin_username');
-                    location.reload();
-                }
-            });
-            
-            // Listen for real-time updates
-            listenToPickups();
-            listenToFeedback();
-        }
-        
-        function listenToPickups() {
-            database.ref('pickups').orderByChild('timestamp').on('value', (snapshot) => {
-                const pickups = [];
-                let total = 0;
-                let pending = 0;
-                let completed = 0;
-                let today = 0;
-                const todayDate = new Date().toDateString();
-                
-                snapshot.forEach((childSnapshot) => {
-                    const pickup = childSnapshot.val();
-                    pickup.key = childSnapshot.key;
-                    pickups.unshift(pickup); // Newest first
-                    
-                    total++;
-                    if (pickup.status === 'pending' || !pickup.status) pending++;
-                    if (pickup.status === 'completed') completed++;
-                    
-                    const pickupDate = new Date(pickup.timestamp).toDateString();
-                    if (pickupDate === todayDate) today++;
-                });
-                
-                allPickups = pickups;
-                
-                // Update stats
-                document.getElementById('totalPickups').textContent = total;
-                document.getElementById('pendingPickups').textContent = pending;
-                document.getElementById('completedPickups').textContent = completed;
-                document.getElementById('todayPickups').textContent = today;
-                
-                // Update table
-                updatePickupTable(pickups);
-                
-                // Show notification for new pickups
-                if (total > lastPickupCount && lastPickupCount > 0) {
-                    const newCount = total - lastPickupCount;
-                    showNotification(`${newCount} new pickup request${newCount > 1 ? 's' : ''} received!`);
-                }
-                lastPickupCount = total;
-                
-                // Update statistics
-                updateStatistics(pickups);
-            });
-        }
-        
-        function listenToFeedback() {
-            database.ref('feedback').orderByChild('timestamp').on('value', (snapshot) => {
-                const feedback = [];
-                let total = 0;
-                let today = 0;
-                let serviceIssues = 0;
-                let positiveFeedback = 0;
-                const todayDate = new Date().toDateString();
-                
-                snapshot.forEach((childSnapshot) => {
-                    const item = childSnapshot.val();
-                    item.key = childSnapshot.key;
-                    feedback.unshift(item);
-                    
-                    total++;
-                    const itemDate = new Date(item.timestamp).toDateString();
-                    if (itemDate === todayDate) today++;
-                    
-                    // Basic sentiment analysis
-                    const message = item.message.toLowerCase();
-                    if (message.includes('problem') || message.includes('issue') || message.includes('complaint')) {
-                        serviceIssues++;
-                    }
-                    if (message.includes('thank') || message.includes('good') || message.includes('excellent')) {
-                        positiveFeedback++;
-                    }
-                });
-                
-                allFeedback = feedback;
-                
-                document.getElementById('totalFeedback').textContent = total;
-                document.getElementById('todayFeedback').textContent = today;
-                document.getElementById('serviceIssues').textContent = serviceIssues;
-                document.getElementById('positiveFeedback').textContent = positiveFeedback;
-                updateFeedbackTable(feedback);
-                
-                // Show notification for new feedback
-                if (total > lastFeedbackCount && lastFeedbackCount > 0) {
-                    showNotification('New customer feedback received!');
-                }
-                lastFeedbackCount = total;
-            });
-        }
-        
-        function updatePickupTable(pickups) {
-            const tbody = document.getElementById('pickupsBody');
-            
-            if (pickups.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <i class="fas fa-truck"></i>
-                            <h3>No Pickup Requests Yet</h3>
-                            <p>Waiting for customer requests...</p>
-                        </td>
-                    </tr>
-                `;
-                return;
+                // Shake animation
+                this.style.animation = 'shake 0.5s ease';
+                setTimeout(() => this.style.animation = '', 500);
             }
             
-            let tableHTML = '';
-            
-            pickups.forEach((pickup, index) => {
-                const date = new Date(pickup.timestamp);
-                const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            // Reset button
+            submitBtn.innerHTML = originalText;
+            submitBtn.disabled = false;
+        }, 1000);
+    });
+    
+    // Check if already logged in
+    if (localStorage.getItem('sw_admin_logged_in') === 'true') {
+        const username = localStorage.getItem('sw_admin_username') || 'Admin';
+        document.getElementById('currentUser').textContent = username;
+        showAdminPanel();
+    } else {
+        document.getElementById('loginPage').style.display = 'flex';
+    }
+    
+    function showAdminPanel() {
+        document.getElementById('loginPage').style.display = 'none';
+        document.getElementById('adminPanel').style.display = 'block';
+        initializeAdminPanel();
+    }
+    
+    function initializeAdminPanel() {
+        // Tab functionality
+        document.querySelectorAll('.tab-btn').forEach(btn => {
+            btn.addEventListener('click', function() {
+                document.querySelectorAll('.tab-btn').forEach(b => b.classList.remove('active'));
+                document.querySelectorAll('.tab-content').forEach(c => c.classList.remove('active'));
                 
-                tableHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${pickup.name}</strong></td>
-                        <td>${pickup.phone}</td>
-                        <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="${pickup.address}">
-                            ${pickup.address.substring(0, 30)}${pickup.address.length > 30 ? '...' : ''}
-                        </td>
-                        <td>${formattedDate}</td>
-                        <td>
+                this.classList.add('active');
+                document.getElementById(this.dataset.tab).classList.add('active');
+            });
+        });
+        
+        // Logout functionality
+        document.getElementById('logoutBtn').addEventListener('click', function() {
+            if (confirm('Are you sure you want to logout?')) {
+                localStorage.removeItem('sw_admin_logged_in');
+                localStorage.removeItem('sw_admin_username');
+                location.reload();
+            }
+        });
+        
+        // Listen for real-time updates
+        listenToPickups();
+        listenToFeedback();
+    }
+    
+    function listenToPickups() {
+        // FIXED: Listen without ordering first to see all data
+        database.ref('pickups').on('value', (snapshot) => {
+            const pickups = [];
+            let total = 0;
+            let pending = 0;
+            let completed = 0;
+            let today = 0;
+            const todayDate = new Date().toDateString();
+            
+            snapshot.forEach((childSnapshot) => {
+                const pickup = childSnapshot.val();
+                pickup.key = childSnapshot.key;
+                
+                // FIXED: Handle timestamp correctly
+                let timestamp = pickup.timestamp;
+                
+                // Convert to proper date object
+                if (typeof timestamp === 'number' && timestamp > 1000000000000) {
+                    // It's in milliseconds, convert to Date
+                    pickup.dateObj = new Date(timestamp);
+                } else if (typeof timestamp === 'number') {
+                    // It's in seconds, convert to milliseconds
+                    pickup.dateObj = new Date(timestamp * 1000);
+                } else if (timestamp && timestamp._seconds) {
+                    // Firebase timestamp object
+                    pickup.dateObj = new Date(timestamp._seconds * 1000);
+                } else {
+                    // Fallback to current date
+                    pickup.dateObj = new Date();
+                }
+                
+                pickups.unshift(pickup); // Newest first
+                
+                total++;
+                if (pickup.status === 'pending' || !pickup.status) pending++;
+                if (pickup.status === 'completed') completed++;
+                
+                // Check if today's pickup
+                const pickupDate = pickup.dateObj.toDateString();
+                if (pickupDate === todayDate) today++;
+            });
+            
+            // Sort by timestamp (newest first)
+            pickups.sort((a, b) => b.dateObj - a.dateObj);
+            
+            allPickups = pickups;
+            
+            // Update stats
+            document.getElementById('totalPickups').textContent = total;
+            document.getElementById('pendingPickups').textContent = pending;
+            document.getElementById('completedPickups').textContent = completed;
+            document.getElementById('todayPickups').textContent = today;
+            
+            // Update table
+            updatePickupTable(pickups);
+            
+            // Show notification for new pickups
+            if (total > lastPickupCount && lastPickupCount > 0) {
+                const newCount = total - lastPickupCount;
+                showNotification(`${newCount} new pickup request${newCount > 1 ? 's' : ''} received!`);
+            }
+            lastPickupCount = total;
+            
+            // Update statistics
+            updateStatistics(pickups);
+            
+            // Debug log
+            console.log('Pickups loaded:', pickups.length);
+            console.log('Sample pickup:', pickups[0]);
+        }, (error) => {
+            console.error('Error loading pickups:', error);
+            showNotification('Error loading pickup data. Please refresh.');
+        });
+    }
+    
+    function listenToFeedback() {
+        database.ref('feedback').on('value', (snapshot) => {
+            const feedback = [];
+            let total = 0;
+            let today = 0;
+            let serviceIssues = 0;
+            let positiveFeedback = 0;
+            const todayDate = new Date().toDateString();
+            
+            snapshot.forEach((childSnapshot) => {
+                const item = childSnapshot.val();
+                item.key = childSnapshot.key;
+                
+                // Handle timestamp correctly
+                let timestamp = item.timestamp;
+                if (typeof timestamp === 'number' && timestamp > 1000000000000) {
+                    item.dateObj = new Date(timestamp);
+                } else if (typeof timestamp === 'number') {
+                    item.dateObj = new Date(timestamp * 1000);
+                } else if (timestamp && timestamp._seconds) {
+                    item.dateObj = new Date(timestamp._seconds * 1000);
+                } else {
+                    item.dateObj = new Date();
+                }
+                
+                feedback.unshift(item);
+                
+                total++;
+                const itemDate = item.dateObj.toDateString();
+                if (itemDate === todayDate) today++;
+                
+                // Basic sentiment analysis
+                const message = item.message ? item.message.toLowerCase() : '';
+                if (message.includes('problem') || message.includes('issue') || message.includes('complaint')) {
+                    serviceIssues++;
+                }
+                if (message.includes('thank') || message.includes('good') || message.includes('excellent')) {
+                    positiveFeedback++;
+                }
+            });
+            
+            // Sort by timestamp
+            feedback.sort((a, b) => b.dateObj - a.dateObj);
+            
+            allFeedback = feedback;
+            
+            document.getElementById('totalFeedback').textContent = total;
+            document.getElementById('todayFeedback').textContent = today;
+            document.getElementById('serviceIssues').textContent = serviceIssues;
+            document.getElementById('positiveFeedback').textContent = positiveFeedback;
+            updateFeedbackTable(feedback);
+            
+            // Show notification for new feedback
+            if (total > lastFeedbackCount && lastFeedbackCount > 0) {
+                showNotification('New customer feedback received!');
+            }
+            lastFeedbackCount = total;
+            
+            console.log('Feedback loaded:', feedback.length);
+        });
+    }
+    
+    function updatePickupTable(pickups) {
+        const tbody = document.getElementById('pickupsBody');
+        
+        if (!pickups || pickups.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="fas fa-truck"></i>
+                        <h3>No Pickup Requests Yet</h3>
+                        <p>Waiting for customer requests...</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        let tableHTML = '';
+        
+        pickups.forEach((pickup, index) => {
+            // Use the dateObj we created earlier
+            const date = pickup.dateObj || new Date(pickup.timestamp || Date.now());
+            const formattedDate = date.toLocaleDateString() + ' ' + date.toLocaleTimeString([], {hour: '2-digit', minute:'2-digit'});
+            
+            // Escape quotes for template literal
+            const escapedName = (pickup.name || '').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const escapedPhone = (pickup.phone || '').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const escapedAddress = (pickup.address || '').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            
+            tableHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${escapedName}</strong></td>
+                    <td>${escapedPhone}</td>
+                    <td style="max-width: 200px; overflow: hidden; text-overflow: ellipsis;" title="${escapedAddress}">
+                        ${escapedAddress.substring(0, 30)}${escapedAddress.length > 30 ? '...' : ''}
+                    </td>
+                    <td>${formattedDate}</td>
+                    <td>
+                        <span class="status-badge status-${pickup.status || 'pending'}">
+                            <i class="fas fa-${pickup.status === 'completed' ? 'check' : 'clock'}"></i>
+                            ${pickup.status || 'Pending'}
+                        </span>
+                    </td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" onclick="viewPickup('${pickup.key}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn call" onclick="callCustomer('${escapedPhone}')" title="Call Customer">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="action-btn whatsapp" onclick="whatsappCustomer('${escapedPhone}')" title="WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                            ${pickup.status !== 'completed' ? `
+                            <button class="action-btn complete" onclick="updateStatus('${pickup.key}', 'completed')" title="Mark Completed">
+                                <i class="fas fa-check"></i>
+                            </button>
+                            ` : ''}
+                            <button class="action-btn delete" onclick="deletePickup('${pickup.key}')" title="Delete">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        tbody.innerHTML = tableHTML;
+    }
+    
+    function updateFeedbackTable(feedback) {
+        const tbody = document.getElementById('feedbackBody');
+        
+        if (!feedback || feedback.length === 0) {
+            tbody.innerHTML = `
+                <tr>
+                    <td colspan="7" class="empty-state">
+                        <i class="fas fa-comments"></i>
+                        <h3>No Feedback Yet</h3>
+                        <p>Waiting for customer feedback...</p>
+                    </td>
+                </tr>
+            `;
+            return;
+        }
+        
+        let tableHTML = '';
+        
+        feedback.forEach((item, index) => {
+            const date = item.dateObj || new Date(item.timestamp || Date.now());
+            const formattedDate = date.toLocaleDateString();
+            
+            // Escape special characters
+            const escapedName = (item.name || '').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const escapedPhone = (item.phone || '').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const escapedService = (item.service || '').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            const escapedMessage = (item.message || '').replace(/`/g, '\\`').replace(/\$/g, '\\$');
+            
+            tableHTML += `
+                <tr>
+                    <td>${index + 1}</td>
+                    <td><strong>${escapedName}</strong></td>
+                    <td>${escapedPhone}</td>
+                    <td>${escapedService}</td>
+                    <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;" title="${escapedMessage}">
+                        ${escapedMessage.substring(0, 40)}${escapedMessage.length > 40 ? '...' : ''}
+                    </td>
+                    <td>${formattedDate}</td>
+                    <td>
+                        <div class="action-buttons">
+                            <button class="action-btn view" onclick="viewFeedback('${item.key}')" title="View Details">
+                                <i class="fas fa-eye"></i>
+                            </button>
+                            <button class="action-btn call" onclick="callCustomer('${escapedPhone}')" title="Call Customer">
+                                <i class="fas fa-phone"></i>
+                            </button>
+                            <button class="action-btn whatsapp" onclick="whatsappCustomer('${escapedPhone}', 'feedback')" title="Reply via WhatsApp">
+                                <i class="fab fa-whatsapp"></i>
+                            </button>
+                        </div>
+                    </td>
+                </tr>
+            `;
+        });
+        
+        tbody.innerHTML = tableHTML;
+    }
+    
+    function updateStatistics(pickups) {
+        // Estimated revenue (₦3,000 average per pickup)
+        const estimatedRevenue = pickups.length * 3000;
+        document.getElementById('estimatedRevenue').textContent = '₦' + estimatedRevenue.toLocaleString();
+        
+        // Completion rate
+        const completed = pickups.filter(p => p.status === 'completed').length;
+        const completionRate = pickups.length > 0 ? Math.round((completed / pickups.length) * 100) : 0;
+        document.getElementById('completionRate').textContent = completionRate + '%';
+        
+        // Average daily pickups (last 7 days)
+        const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
+        const recentPickups = pickups.filter(p => {
+            const pickupTime = p.dateObj ? p.dateObj.getTime() : (p.timestamp || 0);
+            return pickupTime > oneWeekAgo;
+        });
+        const avgDaily = Math.round(recentPickups.length / 7);
+        document.getElementById('avgPickups').textContent = avgDaily;
+        
+        // Recent activity
+        updateRecentActivity(pickups.slice(0, 8));
+    }
+    
+    function updateRecentActivity(pickups) {
+        const container = document.getElementById('recentActivity');
+        
+        if (!pickups || pickups.length === 0) {
+            container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">No recent activity</p>';
+            return;
+        }
+        
+        let activityHTML = '';
+        
+        pickups.forEach(pickup => {
+            const date = pickup.dateObj || new Date(pickup.timestamp || Date.now());
+            const timeAgo = getTimeAgo(date);
+            
+            activityHTML += `
+                <div class="activity-item">
+                    <div class="activity-icon">
+                        <i class="fas fa-truck"></i>
+                    </div>
+                    <div class="activity-details">
+                        <strong>${pickup.name || 'Unknown'}</strong>
+                        <p>${(pickup.address || '').substring(0, 40)}...</p>
+                    </div>
+                    <div class="activity-time">${timeAgo}</div>
+                </div>
+            `;
+        });
+        
+        container.innerHTML = activityHTML;
+    }
+    
+    function getTimeAgo(date) {
+        const seconds = Math.floor((new Date() - date) / 1000);
+        
+        if (seconds < 60) return 'Just now';
+        if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
+        if (seconds < 86400) return Math.floor(seconds / 3600) + ' hour' + (Math.floor(seconds / 3600) > 1 ? 's' : '') + ' ago';
+        if (seconds < 604800) return Math.floor(seconds / 86400) + ' day' + (Math.floor(seconds / 86400) > 1 ? 's' : '') + ' ago';
+        
+        return date.toLocaleDateString();
+    }
+    
+    function showNotification(message) {
+        const notification = document.getElementById('notification');
+        const notificationText = document.getElementById('notificationText');
+        
+        notificationText.textContent = message;
+        notification.style.display = 'flex';
+        
+        // Play notification sound
+        const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
+        audio.volume = 0.2;
+        audio.play().catch(e => console.log('Audio play failed:', e));
+        
+        // Auto-hide after 5 seconds
+        setTimeout(() => {
+            notification.style.display = 'none';
+        }, 5000);
+    }
+    
+    // Modal functions
+    function openModal(title, content, footer = '') {
+        document.getElementById('modalTitle').textContent = title;
+        document.getElementById('modalBody').innerHTML = content;
+        document.getElementById('modalFooter').innerHTML = footer;
+        document.getElementById('detailModal').style.display = 'flex';
+    }
+    
+    function closeModal() {
+        document.getElementById('detailModal').style.display = 'none';
+    }
+    
+    // Action functions
+    function viewPickup(key) {
+        database.ref('pickups/' + key).once('value').then(snapshot => {
+            const pickup = snapshot.val();
+            if (pickup) {
+                const date = new Date(pickup.timestamp || Date.now());
+                const formattedDate = date.toLocaleString();
+                
+                const content = `
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+                            <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Customer Information</strong>
+                            <div>👤 <strong>Name:</strong> ${pickup.name || 'Not provided'}</div>
+                            <div>📱 <strong>Phone:</strong> ${pickup.phone || 'Not provided'}</div>
+                            <div>📍 <strong>Address:</strong> ${pickup.address || 'Not provided'}</div>
+                        </div>
+                        
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+                            <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Pickup Details</strong>
+                            <div>📅 <strong>Preferred Date:</strong> ${pickup.pickupDate || 'Not specified'}</div>
+                            <div>⏰ <strong>Time Preference:</strong> ${pickup.timePreference || 'Not specified'}</div>
+                            <div>🕒 <strong>Submitted:</strong> ${formattedDate}</div>
+                        </div>
+                        
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+                            <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Service Details</strong>
+                            <div>🧺 <strong>Laundry Items:</strong></div>
+                            <div style="margin-top: 8px; padding: 12px; background: white; border-radius: 8px;">
+                                ${pickup.laundryItems || 'Not specified'}
+                            </div>
+                        </div>
+                        
+                        <div style="display: flex; gap: 10px; margin-top: 10px;">
                             <span class="status-badge status-${pickup.status || 'pending'}">
                                 <i class="fas fa-${pickup.status === 'completed' ? 'check' : 'clock'}"></i>
                                 ${pickup.status || 'Pending'}
                             </span>
-                        </td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn view" onclick="viewPickup('${pickup.key}')" title="View Details">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn call" onclick="callCustomer('${pickup.phone}')" title="Call Customer">
-                                    <i class="fas fa-phone"></i>
-                                </button>
-                                <button class="action-btn whatsapp" onclick="whatsappCustomer('${pickup.phone}')" title="WhatsApp">
-                                    <i class="fab fa-whatsapp"></i>
-                                </button>
-                                ${pickup.status !== 'completed' ? `
-                                <button class="action-btn complete" onclick="updateStatus('${pickup.key}', 'completed')" title="Mark Completed">
-                                    <i class="fas fa-check"></i>
-                                </button>
-                                ` : ''}
-                                <button class="action-btn delete" onclick="deletePickup('${pickup.key}')" title="Delete">
-                                    <i class="fas fa-trash"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = tableHTML;
-        }
-        
-        function updateFeedbackTable(feedback) {
-            const tbody = document.getElementById('feedbackBody');
-            
-            if (feedback.length === 0) {
-                tbody.innerHTML = `
-                    <tr>
-                        <td colspan="7" class="empty-state">
-                            <i class="fas fa-comments"></i>
-                            <h3>No Feedback Yet</h3>
-                            <p>Waiting for customer feedback...</p>
-                        </td>
-                    </tr>
-                `;
-                return;
-            }
-            
-            let tableHTML = '';
-            
-            feedback.forEach((item, index) => {
-                const date = new Date(item.timestamp);
-                const formattedDate = date.toLocaleDateString();
-                
-                tableHTML += `
-                    <tr>
-                        <td>${index + 1}</td>
-                        <td><strong>${item.name}</strong></td>
-                        <td>${item.phone}</td>
-                        <td>${item.service}</td>
-                        <td style="max-width: 300px; overflow: hidden; text-overflow: ellipsis;" title="${item.message}">
-                            ${item.message.substring(0, 40)}${item.message.length > 40 ? '...' : ''}
-                        </td>
-                        <td>${formattedDate}</td>
-                        <td>
-                            <div class="action-buttons">
-                                <button class="action-btn view" onclick="viewFeedback('${item.key}')" title="View Details">
-                                    <i class="fas fa-eye"></i>
-                                </button>
-                                <button class="action-btn call" onclick="callCustomer('${item.phone}')" title="Call Customer">
-                                    <i class="fas fa-phone"></i>
-                                </button>
-                                <button class="action-btn whatsapp" onclick="whatsappCustomer('${item.phone}', 'feedback')" title="Reply via WhatsApp">
-                                    <i class="fab fa-whatsapp"></i>
-                                </button>
-                            </div>
-                        </td>
-                    </tr>
-                `;
-            });
-            
-            tbody.innerHTML = tableHTML;
-        }
-        
-        function updateStatistics(pickups) {
-            // Estimated revenue (₦3,000 average per pickup)
-            const estimatedRevenue = pickups.length * 3000;
-            document.getElementById('estimatedRevenue').textContent = '₦' + estimatedRevenue.toLocaleString();
-            
-            // Completion rate
-            const completed = pickups.filter(p => p.status === 'completed').length;
-            const completionRate = pickups.length > 0 ? Math.round((completed / pickups.length) * 100) : 0;
-            document.getElementById('completionRate').textContent = completionRate + '%';
-            
-            // Average daily pickups (last 7 days)
-            const oneWeekAgo = Date.now() - (7 * 24 * 60 * 60 * 1000);
-            const recentPickups = pickups.filter(p => p.timestamp > oneWeekAgo);
-            const avgDaily = Math.round(recentPickups.length / 7);
-            document.getElementById('avgPickups').textContent = avgDaily;
-            
-            // Recent activity
-            updateRecentActivity(pickups.slice(0, 8));
-        }
-        
-        function updateRecentActivity(pickups) {
-            const container = document.getElementById('recentActivity');
-            
-            if (pickups.length === 0) {
-                container.innerHTML = '<p style="color: var(--gray); text-align: center; padding: 40px;">No recent activity</p>';
-                return;
-            }
-            
-            let activityHTML = '';
-            
-            pickups.forEach(pickup => {
-                const date = new Date(pickup.timestamp);
-                const timeAgo = getTimeAgo(date);
-                
-                activityHTML += `
-                    <div class="activity-item">
-                        <div class="activity-icon">
-                            <i class="fas fa-truck"></i>
                         </div>
-                        <div class="activity-details">
-                            <strong>${pickup.name}</strong>
-                            <p>${pickup.address.substring(0, 40)}...</p>
-                        </div>
-                        <div class="activity-time">${timeAgo}</div>
                     </div>
                 `;
-            });
-            
-            container.innerHTML = activityHTML;
-        }
-        
-        function getTimeAgo(date) {
-            const seconds = Math.floor((new Date() - date) / 1000);
-            
-            if (seconds < 60) return 'Just now';
-            if (seconds < 3600) return Math.floor(seconds / 60) + ' min ago';
-            if (seconds < 86400) return Math.floor(seconds / 3600) + ' hour' + (Math.floor(seconds / 3600) > 1 ? 's' : '') + ' ago';
-            if (seconds < 604800) return Math.floor(seconds / 86400) + ' day' + (Math.floor(seconds / 86400) > 1 ? 's' : '') + ' ago';
-            
-            return date.toLocaleDateString();
-        }
-        
-        function showNotification(message) {
-            const notification = document.getElementById('notification');
-            const notificationText = document.getElementById('notificationText');
-            
-            notificationText.textContent = message;
-            notification.style.display = 'flex';
-            
-            // Play notification sound
-            const audio = new Audio('https://assets.mixkit.co/sfx/preview/mixkit-correct-answer-tone-2870.mp3');
-            audio.volume = 0.2;
-            audio.play().catch(e => console.log('Audio play failed:', e));
-            
-            // Auto-hide after 5 seconds
-            setTimeout(() => {
-                notification.style.display = 'none';
-            }, 5000);
-        }
-        
-        // Modal functions
-        function openModal(title, content, footer = '') {
-            document.getElementById('modalTitle').textContent = title;
-            document.getElementById('modalBody').innerHTML = content;
-            document.getElementById('modalFooter').innerHTML = footer;
-            document.getElementById('detailModal').style.display = 'flex';
-        }
-        
-        function closeModal() {
-            document.getElementById('detailModal').style.display = 'none';
-        }
-        
-        // Action functions
-        function viewPickup(key) {
-            database.ref('pickups/' + key).once('value').then(snapshot => {
-                const pickup = snapshot.val();
-                if (pickup) {
-                    const date = new Date(pickup.timestamp);
-                    const formattedDate = date.toLocaleString();
-                    
-                    const content = `
-                        <div style="display: grid; gap: 15px;">
-                            <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
-                                <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Customer Information</strong>
-                                <div>👤 <strong>Name:</strong> ${pickup.name}</div>
-                                <div>📱 <strong>Phone:</strong> ${pickup.phone}</div>
-                                <div>📍 <strong>Address:</strong> ${pickup.address}</div>
-                            </div>
-                            
-                            <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
-                                <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Pickup Details</strong>
-                                <div>📅 <strong>Preferred Date:</strong> ${pickup.pickupDate}</div>
-                                <div>⏰ <strong>Time Preference:</strong> ${pickup.timePreference}</div>
-                                <div>🕒 <strong>Submitted:</strong> ${formattedDate}</div>
-                            </div>
-                            
-                            <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
-                                <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Service Details</strong>
-                                <div>🧺 <strong>Laundry Items:</strong></div>
-                                <div style="margin-top: 8px; padding: 12px; background: white; border-radius: 8px;">
-                                    ${pickup.laundryItems || 'Not specified'}
-                                </div>
-                            </div>
-                            
-                            <div style="display: flex; gap: 10px; margin-top: 10px;">
-                                <span class="status-badge status-${pickup.status || 'pending'}">
-                                    <i class="fas fa-${pickup.status === 'completed' ? 'check' : 'clock'}"></i>
-                                    ${pickup.status || 'Pending'}
-                                </span>
-                            </div>
-                        </div>
-                    `;
-                    
-                    const footer = `
-                        <button onclick="callCustomer('${pickup.phone}')" style="padding: 10px 20px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            <i class="fas fa-phone"></i> Call Customer
-                        </button>
-                        <button onclick="whatsappCustomer('${pickup.phone}')" style="padding: 10px 20px; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            <i class="fab fa-whatsapp"></i> WhatsApp
-                        </button>
-                        ${pickup.status !== 'completed' ? `
-                        <button onclick="updateStatus('${key}', 'completed')" style="padding: 10px 20px; background: var(--warning); color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            <i class="fas fa-check"></i> Mark Completed
-                        </button>
-                        ` : ''}
-                        <button onclick="closeModal()" style="padding: 10px 20px; background: var(--light-gray); color: var(--dark); border: none; border-radius: 8px; cursor: pointer;">
-                            Close
-                        </button>
-                    `;
-                    
-                    openModal('Pickup Request Details', content, footer);
-                }
-            });
-        }
-        
-        function viewFeedback(key) {
-            database.ref('feedback/' + key).once('value').then(snapshot => {
-                const feedback = snapshot.val();
-                if (feedback) {
-                    const date = new Date(feedback.timestamp);
-                    const formattedDate = date.toLocaleString();
-                    
-                    const content = `
-                        <div style="display: grid; gap: 15px;">
-                            <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
-                                <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Customer Information</strong>
-                                <div>👤 <strong>Name:</strong> ${feedback.name}</div>
-                                <div>📱 <strong>Phone:</strong> ${feedback.phone}</div>
-                                <div>🛠️ <strong>Service:</strong> ${feedback.service}</div>
-                                <div>🕒 <strong>Submitted:</strong> ${formattedDate}</div>
-                            </div>
-                            
-                            <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
-                                <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Message</strong>
-                                <div style="padding: 15px; background: white; border-radius: 8px; line-height: 1.6;">
-                                    ${feedback.message}
-                                </div>
-                            </div>
-                        </div>
-                    `;
-                    
-                    const footer = `
-                        <button onclick="callCustomer('${feedback.phone}')" style="padding: 10px 20px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            <i class="fas fa-phone"></i> Call Customer
-                        </button>
-                        <button onclick="whatsappCustomer('${feedback.phone}', 'feedback')" style="padding: 10px 20px; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer;">
-                            <i class="fab fa-whatsapp"></i> Reply via WhatsApp
-                        </button>
-                        <button onclick="closeModal()" style="padding: 10px 20px; background: var(--light-gray); color: var(--dark); border: none; border-radius: 8px; cursor: pointer;">
-                            Close
-                        </button>
-                    `;
-                    
-                    openModal('Customer Feedback Details', content, footer);
-                }
-            });
-        }
-        
-        function callCustomer(phone) {
-            window.location.href = `tel:${phone}`;
-        }
-        
-        function whatsappCustomer(phone, type = 'pickup') {
-            const message = type === 'feedback' 
-                ? `Hello, this is Standard Wash Laundry. Thank you for your feedback! We appreciate your message and will get back to you shortly.`
-                : `Hello, this is Standard Wash Laundry. We're following up on your pickup request. When would be a convenient time for us to come?`;
-            
-            const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
-            window.open(whatsappUrl, '_blank');
-        }
-        
-        function updateStatus(key, status) {
-            const statusText = status === 'completed' ? 'Mark as Completed' : 'Mark as Pending';
-            if (confirm(`${statusText}? This will update the pickup request status.`)) {
-                database.ref('pickups/' + key).update({ status: status })
-                    .then(() => {
-                        showNotification('Pickup status updated successfully!');
-                        closeModal();
-                    })
-                    .catch(error => alert('Error: ' + error.message));
+                
+                const footer = `
+                    <button onclick="callCustomer('${pickup.phone || ''}')" style="padding: 10px 20px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        <i class="fas fa-phone"></i> Call Customer
+                    </button>
+                    <button onclick="whatsappCustomer('${pickup.phone || ''}')" style="padding: 10px 20px; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        <i class="fab fa-whatsapp"></i> WhatsApp
+                    </button>
+                    ${pickup.status !== 'completed' ? `
+                    <button onclick="updateStatus('${key}', 'completed')" style="padding: 10px 20px; background: var(--warning); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        <i class="fas fa-check"></i> Mark Completed
+                    </button>
+                    ` : ''}
+                    <button onclick="closeModal()" style="padding: 10px 20px; background: var(--light-gray); color: var(--dark); border: none; border-radius: 8px; cursor: pointer;">
+                        Close
+                    </button>
+                `;
+                
+                openModal('Pickup Request Details', content, footer);
             }
-        }
-        
-        function deletePickup(key) {
-            if (confirm('Are you sure you want to delete this pickup request? This action cannot be undone.')) {
-                database.ref('pickups/' + key).remove()
-                    .then(() => {
-                        showNotification('Pickup request deleted!');
-                        closeModal();
-                    })
-                    .catch(error => alert('Error: ' + error.message));
-            }
-        }
-        
-        function exportData(type) {
-            let data, filename, content;
-            
-            if (type === 'pickups') {
-                data = allPickups;
-                filename = `pickup-requests-${new Date().toISOString().split('T')[0]}.csv`;
-                
-                // Convert to CSV
-                const headers = ['Name', 'Phone', 'Address', 'Pickup Date', 'Time Preference', 'Items', 'Status', 'Date Submitted'];
-                const rows = data.map(p => [
-                    `"${p.name}"`,
-                    `"${p.phone}"`,
-                    `"${p.address}"`,
-                    `"${p.pickupDate || ''}"`,
-                    `"${p.timePreference || ''}"`,
-                    `"${p.laundryItems || ''}"`,
-                    `"${p.status || 'pending'}"`,
-                    `"${new Date(p.timestamp).toLocaleString()}"`
-                ]);
-                
-                content = [headers, ...rows].map(row => row.join(',')).join('\n');
-            } else {
-                data = allFeedback;
-                filename = `customer-feedback-${new Date().toISOString().split('T')[0]}.csv`;
-                
-                // Convert to CSV
-                const headers = ['Name', 'Phone', 'Service', 'Message', 'Date Submitted'];
-                const rows = data.map(f => [
-                    `"${f.name}"`,
-                    `"${f.phone}"`,
-                    `"${f.service}"`,
-                    `"${f.message.replace(/"/g, '""')}"`,
-                    `"${new Date(f.timestamp).toLocaleString()}"`
-                ]);
-                
-                content = [headers, ...rows].map(row => row.join(',')).join('\n');
-            }
-            
-            // Download file
-            const blob = new Blob([content], { type: 'text/csv' });
-            const url = window.URL.createObjectURL(blob);
-            const a = document.createElement('a');
-            a.href = url;
-            a.download = filename;
-            document.body.appendChild(a);
-            a.click();
-            document.body.removeChild(a);
-            window.URL.revokeObjectURL(url);
-            
-            showNotification(`${type === 'pickups' ? 'Pickup requests' : 'Customer feedback'} exported successfully!`);
-        }
-        
-        function refreshData() {
-            location.reload();
-        }
-        
-        // Close modal when clicking outside
-        document.getElementById('detailModal').addEventListener('click', function(e) {
-            if (e.target === this) closeModal();
         });
+    }
+    
+    function viewFeedback(key) {
+        database.ref('feedback/' + key).once('value').then(snapshot => {
+            const feedback = snapshot.val();
+            if (feedback) {
+                const date = new Date(feedback.timestamp || Date.now());
+                const formattedDate = date.toLocaleString();
+                
+                const content = `
+                    <div style="display: grid; gap: 15px;">
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+                            <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Customer Information</strong>
+                            <div>👤 <strong>Name:</strong> ${feedback.name || 'Not provided'}</div>
+                            <div>📱 <strong>Phone:</strong> ${feedback.phone || 'Not provided'}</div>
+                            <div>🛠️ <strong>Service:</strong> ${feedback.service || 'Not specified'}</div>
+                            <div>🕒 <strong>Submitted:</strong> ${formattedDate}</div>
+                        </div>
+                        
+                        <div style="background: #f8fafc; padding: 20px; border-radius: 10px;">
+                            <strong style="display: block; margin-bottom: 10px; color: var(--dark);">Message</strong>
+                            <div style="padding: 15px; background: white; border-radius: 8px; line-height: 1.6;">
+                                ${feedback.message || 'No message provided'}
+                            </div>
+                        </div>
+                    </div>
+                `;
+                
+                const footer = `
+                    <button onclick="callCustomer('${feedback.phone || ''}')" style="padding: 10px 20px; background: var(--success); color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        <i class="fas fa-phone"></i> Call Customer
+                    </button>
+                    <button onclick="whatsappCustomer('${feedback.phone || ''}', 'feedback')" style="padding: 10px 20px; background: #25D366; color: white; border: none; border-radius: 8px; cursor: pointer;">
+                        <i class="fab fa-whatsapp"></i> Reply via WhatsApp
+                    </button>
+                    <button onclick="closeModal()" style="padding: 10px 20px; background: var(--light-gray); color: var(--dark); border: none; border-radius: 8px; cursor: pointer;">
+                        Close
+                    </button>
+                `;
+                
+                openModal('Customer Feedback Details', content, footer);
+            }
+        });
+    }
+    
+    function callCustomer(phone) {
+        if (phone) {
+            window.location.href = `tel:${phone}`;
+        } else {
+            alert('Phone number not available');
+        }
+    }
+    
+    function whatsappCustomer(phone, type = 'pickup') {
+        if (!phone) {
+            alert('Phone number not available');
+            return;
+        }
         
-        // Add shake animation CSS
-        const style = document.createElement('style');
-        style.textContent = `
-            @keyframes shake {
-                0%, 100% { transform: translateX(0); }
-                10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
-                20%, 40%, 60%, 80% { transform: translateX(5px); }
-            }
+        const message = type === 'feedback' 
+            ? `Hello, this is Standard Wash Laundry. Thank you for your feedback! We appreciate your message and will get back to you shortly.`
+            : `Hello, this is Standard Wash Laundry. We're following up on your pickup request. When would be a convenient time for us to come?`;
+        
+        const whatsappUrl = `https://wa.me/${phone}?text=${encodeURIComponent(message)}`;
+        window.open(whatsappUrl, '_blank');
+    }
+    
+    function updateStatus(key, status) {
+        const statusText = status === 'completed' ? 'Mark as Completed' : 'Mark as Pending';
+        if (confirm(`${statusText}? This will update the pickup request status.`)) {
+            database.ref('pickups/' + key).update({ status: status })
+                .then(() => {
+                    showNotification('Pickup status updated successfully!');
+                    closeModal();
+                })
+                .catch(error => alert('Error: ' + error.message));
+        }
+    }
+    
+    function deletePickup(key) {
+        if (confirm('Are you sure you want to delete this pickup request? This action cannot be undone.')) {
+            database.ref('pickups/' + key).remove()
+                .then(() => {
+                    showNotification('Pickup request deleted!');
+                    closeModal();
+                })
+                .catch(error => alert('Error: ' + error.message));
+        }
+    }
+    
+    function exportData(type) {
+        let data, filename, content;
+        
+        if (type === 'pickups') {
+            data = allPickups;
+            filename = `pickup-requests-${new Date().toISOString().split('T')[0]}.csv`;
             
-            .fa-shake {
-                animation: fa-shake 0.5s ease-in-out;
-            }
+            // Convert to CSV
+            const headers = ['Name', 'Phone', 'Address', 'Pickup Date', 'Time Preference', 'Items', 'Status', 'Date Submitted'];
+            const rows = data.map(p => [
+                `"${p.name || ''}"`,
+                `"${p.phone || ''}"`,
+                `"${p.address || ''}"`,
+                `"${p.pickupDate || ''}"`,
+                `"${p.timePreference || ''}"`,
+                `"${p.laundryItems || ''}"`,
+                `"${p.status || 'pending'}"`,
+                `"${(p.dateObj || new Date()).toLocaleString()}"`
+            ]);
             
-            @keyframes fa-shake {
-                0%, 100% { transform: rotate(0deg); }
-                25% { transform: rotate(-10deg); }
-                75% { transform: rotate(10deg); }
-            }
-        `;
-        document.head.appendChild(style);
-    </script>
+            content = [headers, ...rows].map(row => row.join(',')).join('\n');
+        } else {
+            data = allFeedback;
+            filename = `customer-feedback-${new Date().toISOString().split('T')[0]}.csv`;
+            
+            // Convert to CSV
+            const headers = ['Name', 'Phone', 'Service', 'Message', 'Date Submitted'];
+            const rows = data.map(f => [
+                `"${f.name || ''}"`,
+                `"${f.phone || ''}"`,
+                `"${f.service || ''}"`,
+                `"${(f.message || '').replace(/"/g, '""')}"`,
+                `"${(f.dateObj || new Date()).toLocaleString()}"`
+            ]);
+            
+            content = [headers, ...rows].map(row => row.join(',')).join('\n');
+        }
+        
+        // Download file
+        const blob = new Blob([content], { type: 'text/csv' });
+        const url = window.URL.createObjectURL(blob);
+        const a = document.createElement('a');
+        a.href = url;
+        a.download = filename;
+        document.body.appendChild(a);
+        a.click();
+        document.body.removeChild(a);
+        window.URL.revokeObjectURL(url);
+        
+        showNotification(`${type === 'pickups' ? 'Pickup requests' : 'Customer feedback'} exported successfully!`);
+    }
+    
+    function refreshData() {
+        location.reload();
+    }
+    
+    // Close modal when clicking outside
+    document.getElementById('detailModal').addEventListener('click', function(e) {
+        if (e.target === this) closeModal();
+    });
+    
+    // Add shake animation CSS
+    const style = document.createElement('style');
+    style.textContent = `
+        @keyframes shake {
+            0%, 100% { transform: translateX(0); }
+            10%, 30%, 50%, 70%, 90% { transform: translateX(-5px); }
+            20%, 40%, 60%, 80% { transform: translateX(5px); }
+        }
+        
+        .fa-shake {
+            animation: fa-shake 0.5s ease-in-out;
+        }
+        
+        @keyframes fa-shake {
+            0%, 100% { transform: rotate(0deg); }
+            25% { transform: rotate(-10deg); }
+            75% { transform: rotate(10deg); }
+        }
+    `;
+    document.head.appendChild(style);
+                                                                  </script>
 </body>
 </html>
