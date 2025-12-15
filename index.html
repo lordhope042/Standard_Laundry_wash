@@ -13,44 +13,71 @@
     <meta name="twitter:card" content="summary_large_image">
     <title>Standard Wash Laundry - Professional Laundry Services</title>
     <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800&family=Poppins:wght@400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Firebase SDK -->
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-database-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.22.2/firebase-auth-compat.js"></script>
     <style>
         :root {
-            --primary: #0056b3;
-            --secondary: #007bff;
-            --accent: #e67e22;
-            --success: #28a745;
-            --warning: #ffc107;
-            --danger: #dc3545;
+            --primary: #0066cc;
+            --primary-dark: #0052a3;
+            --secondary: #00b894;
+            --accent: #ff7e5f;
+            --success: #27ae60;
+            --warning: #f39c12;
+            --danger: #e74c3c;
             --light: #f8f9fa;
-            --dark: #212529;
-            --gray: #6c757d;
-            --light-gray: #e9ecef;
+            --dark: #2c3e50;
+            --gray: #7f8c8d;
+            --light-gray: #ecf0f1;
             --gradient: linear-gradient(135deg, var(--primary), var(--secondary));
+            --gradient-dark: linear-gradient(135deg, var(--primary-dark), #009975);
+            --gradient-accent: linear-gradient(135deg, var(--accent), #ff6b4a);
+            --shadow-sm: 0 4px 12px rgba(0, 0, 0, 0.08);
+            --shadow-md: 0 10px 30px rgba(0, 0, 0, 0.12);
+            --shadow-lg: 0 20px 50px rgba(0, 0, 0, 0.15);
+            --radius: 12px;
+            --radius-lg: 20px;
         }
         
         * {
             margin: 0;
             padding: 0;
             box-sizing: border-box;
-            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
         }
         
         body {
-            background-color: #f5f7fa;
+            font-family: 'Inter', -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif;
+            background-color: #f9fbfd;
             color: var(--dark);
             line-height: 1.6;
             scroll-behavior: smooth;
+            overflow-x: hidden;
+        }
+        
+        h1, h2, h3, h4 {
+            font-family: 'Poppins', sans-serif;
+            font-weight: 700;
         }
         
         /* Header Styles */
         header {
-            background: var(--gradient);
-            color: white;
+            background: white;
+            color: var(--dark);
             padding: 1rem 0;
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+            box-shadow: var(--shadow-sm);
             position: sticky;
             top: 0;
             z-index: 1000;
+            transition: all 0.3s ease;
+        }
+        
+        .header-scrolled {
+            padding: 0.7rem 0;
+            box-shadow: var(--shadow-md);
         }
         
         .header-container {
@@ -65,79 +92,92 @@
         .logo {
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 12px;
             transition: transform 0.3s;
+            text-decoration: none;
         }
         
         .logo:hover {
-            transform: scale(1.02);
+            transform: translateY(-2px);
         }
         
         .logo h1 {
             font-size: 1.8rem;
             font-weight: 800;
             letter-spacing: -0.5px;
+            background: var(--gradient);
+            -webkit-background-clip: text;
+            background-clip: text;
+            color: transparent;
         }
         
         .logo-icon {
-            background: white;
-            color: var(--primary);
-            width: 55px;
-            height: 55px;
-            border-radius: 12px;
+            background: var(--gradient);
+            color: white;
+            width: 50px;
+            height: 50px;
+            border-radius: 10px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.8rem;
-            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            font-size: 1.5rem;
+            box-shadow: var(--shadow-sm);
         }
         
         .contact-info {
             display: flex;
             flex-direction: column;
             align-items: flex-end;
-            gap: 5px;
+            gap: 8px;
         }
         
         .phone-numbers {
             display: flex;
-            gap: 20px;
+            gap: 15px;
         }
         
         .phone-numbers a {
-            color: white;
+            color: var(--dark);
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 8px;
             transition: all 0.3s;
-            font-weight: 500;
-            padding: 5px 12px;
-            border-radius: 20px;
-            background: rgba(255, 255, 255, 0.1);
+            font-weight: 600;
+            padding: 10px 18px;
+            border-radius: 50px;
+            background: var(--light);
+            font-size: 0.95rem;
         }
         
         .phone-numbers a:hover {
-            background: rgba(255, 255, 255, 0.2);
+            background: var(--primary);
+            color: white;
             transform: translateY(-2px);
+            box-shadow: var(--shadow-sm);
         }
         
         .email a {
-            color: rgba(255, 255, 255, 0.9);
+            color: var(--gray);
             text-decoration: none;
             display: flex;
             align-items: center;
             gap: 8px;
             font-size: 0.9rem;
+            transition: color 0.3s;
+        }
+        
+        .email a:hover {
+            color: var(--primary);
         }
         
         /* Hero Section */
         .hero {
-            background: linear-gradient(rgba(0, 86, 179, 0.85), rgba(0, 123, 255, 0.9)), url('https://images.unsplash.com/photo-1601142637085-3238c2b9c83c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
+            background: linear-gradient(rgba(0, 0, 0, 0.7), rgba(0, 0, 0, 0.7)), url('https://images.unsplash.com/photo-1601142637085-3238c2b9c83c?ixlib=rb-4.0.3&auto=format&fit=crop&w=1950&q=80');
             background-size: cover;
             background-position: center;
             background-attachment: fixed;
-            height: 85vh;
+            min-height: 90vh;
             display: flex;
             align-items: center;
             color: white;
@@ -146,39 +186,42 @@
             overflow: hidden;
         }
         
-        .hero::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            bottom: 0;
-            background: radial-gradient(circle at center, transparent 0%, rgba(0, 0, 0, 0.3) 100%);
-        }
-        
         .hero-content {
-            max-width: 850px;
+            max-width: 900px;
             margin: 0 auto;
-            padding: 20px;
+            padding: 40px 20px;
             position: relative;
             z-index: 1;
+            animation: fadeInUp 1s ease;
+        }
+        
+        @keyframes fadeInUp {
+            from {
+                opacity: 0;
+                transform: translateY(30px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
         }
         
         .hero h2 {
-            font-size: 3.8rem;
-            margin-bottom: 25px;
-            text-shadow: 0 4px 8px rgba(0, 0, 0, 0.3);
+            font-size: 3.5rem;
+            margin-bottom: 20px;
             font-weight: 800;
-            line-height: 1.2;
+            line-height: 1.1;
+            text-shadow: 0 2px 10px rgba(0, 0, 0, 0.3);
         }
         
         .hero p {
-            font-size: 1.5rem;
+            font-size: 1.4rem;
             margin-bottom: 40px;
             max-width: 700px;
             margin-left: auto;
             margin-right: auto;
-            opacity: 0.95;
+            opacity: 0.9;
+            font-weight: 300;
         }
         
         .hero-buttons {
@@ -186,31 +229,35 @@
             gap: 20px;
             justify-content: center;
             flex-wrap: wrap;
+            margin-top: 30px;
         }
         
         .btn {
             padding: 16px 35px;
             border: none;
             border-radius: 50px;
-            font-size: 1.1rem;
+            font-size: 1rem;
             font-weight: 600;
             cursor: pointer;
             display: inline-flex;
             align-items: center;
-            gap: 12px;
+            gap: 10px;
             transition: all 0.3s ease;
             text-decoration: none;
+            text-align: center;
+            font-family: 'Inter', sans-serif;
         }
         
         .btn-primary {
-            background: white;
-            color: var(--primary);
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.2);
+            background: var(--gradient);
+            color: white;
+            box-shadow: 0 10px 20px rgba(0, 102, 204, 0.3);
         }
         
         .btn-primary:hover {
-            transform: translateY(-5px) scale(1.05);
-            box-shadow: 0 12px 25px rgba(0, 0, 0, 0.3);
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(0, 102, 204, 0.4);
+            background: var(--gradient-dark);
         }
         
         .btn-secondary {
@@ -223,6 +270,17 @@
         .btn-secondary:hover {
             background: rgba(255, 255, 255, 0.25);
             transform: translateY(-5px);
+            border-color: rgba(255, 255, 255, 0.5);
+        }
+        
+        .btn-accent {
+            background: var(--gradient-accent);
+            color: white;
+        }
+        
+        .btn-accent:hover {
+            transform: translateY(-5px);
+            box-shadow: 0 15px 30px rgba(255, 126, 95, 0.4);
         }
         
         .floating-badge {
@@ -230,19 +288,25 @@
             bottom: -25px;
             left: 50%;
             transform: translateX(-50%);
-            background: var(--accent);
+            background: var(--gradient-accent);
             color: white;
-            padding: 15px 30px;
+            padding: 18px 35px;
             border-radius: 50px;
             font-weight: 700;
-            font-size: 1.2rem;
+            font-size: 1.1rem;
             display: flex;
             align-items: center;
-            gap: 10px;
-            box-shadow: 0 10px 25px rgba(230, 126, 34, 0.4);
+            gap: 12px;
+            box-shadow: var(--shadow-lg);
             cursor: pointer;
             animation: float 3s ease-in-out infinite;
             z-index: 10;
+            transition: all 0.3s;
+        }
+        
+        .floating-badge:hover {
+            transform: translateX(-50%) translateY(-5px);
+            box-shadow: 0 20px 40px rgba(255, 126, 95, 0.5);
         }
         
         @keyframes float {
@@ -254,7 +318,7 @@
         .container {
             max-width: 1200px;
             margin: 0 auto;
-            padding: 60px 20px;
+            padding: 80px 20px;
         }
         
         section {
@@ -268,23 +332,97 @@
         
         .section-title h2 {
             font-size: 2.8rem;
-            color: var(--primary);
+            color: var(--dark);
             display: inline-block;
             position: relative;
             padding-bottom: 15px;
             font-weight: 700;
+            margin-bottom: 15px;
         }
         
         .section-title h2::after {
             content: '';
             position: absolute;
-            width: 100px;
-            height: 5px;
-            background: var(--accent);
+            width: 80px;
+            height: 4px;
+            background: var(--gradient);
             bottom: 0;
             left: 50%;
             transform: translateX(-50%);
-            border-radius: 3px;
+            border-radius: 2px;
+        }
+        
+        .section-subtitle {
+            text-align: center;
+            color: var(--gray);
+            font-size: 1.1rem;
+            max-width: 700px;
+            margin: 15px auto 0;
+            line-height: 1.6;
+        }
+        
+        /* Features Section */
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 30px;
+            margin-top: 40px;
+        }
+        
+        .feature-card {
+            background: white;
+            padding: 40px 30px;
+            border-radius: var(--radius-lg);
+            text-align: center;
+            box-shadow: var(--shadow-md);
+            transition: all 0.4s ease;
+            border: 2px solid transparent;
+            position: relative;
+            overflow: hidden;
+        }
+        
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--gradient);
+        }
+        
+        .feature-card:hover {
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
+        }
+        
+        .feature-icon {
+            width: 70px;
+            height: 70px;
+            background: var(--gradient);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 25px;
+            font-size: 1.8rem;
+            color: white;
+            transition: transform 0.3s;
+        }
+        
+        .feature-card:hover .feature-icon {
+            transform: scale(1.1) rotate(5deg);
+        }
+        
+        .feature-card h3 {
+            font-size: 1.4rem;
+            margin-bottom: 15px;
+            color: var(--dark);
+        }
+        
+        .feature-card p {
+            color: var(--gray);
+            font-size: 1rem;
         }
         
         /* Pricing Section */
@@ -296,52 +434,69 @@
         
         .price-card {
             background: white;
-            border-radius: 20px;
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow-md);
             transition: all 0.4s ease;
             border: 2px solid transparent;
+            position: relative;
         }
         
         .price-card:hover {
-            transform: translateY(-15px) scale(1.02);
-            box-shadow: 0 25px 40px rgba(0, 0, 0, 0.15);
+            transform: translateY(-10px);
+            box-shadow: var(--shadow-lg);
             border-color: var(--primary);
+        }
+        
+        .price-card.featured {
+            border: 2px solid var(--primary);
+            transform: scale(1.03);
+        }
+        
+        .price-card.featured::before {
+            content: 'Most Popular';
+            position: absolute;
+            top: 20px;
+            right: -30px;
+            background: var(--primary);
+            color: white;
+            padding: 6px 30px;
+            font-size: 0.8rem;
+            font-weight: 600;
+            transform: rotate(45deg);
+            z-index: 1;
+            letter-spacing: 1px;
         }
         
         .price-header {
             background: var(--gradient);
             color: white;
-            padding: 30px 20px;
+            padding: 35px 25px;
             text-align: center;
             position: relative;
         }
         
-        .price-header::before {
-            content: '';
-            position: absolute;
-            top: 0;
-            left: 0;
-            right: 0;
-            height: 5px;
-            background: var(--accent);
-        }
-        
         .price-header h3 {
             font-size: 1.6rem;
-            margin-bottom: 15px;
-            font-weight: 600;
+            margin-bottom: 10px;
+            font-weight: 700;
         }
         
         .price-amount {
-            font-size: 2.5rem;
+            font-size: 2.4rem;
             font-weight: 800;
             color: white;
-            text-shadow: 0 2px 4px rgba(0, 0, 0, 0.2);
+            margin: 10px 0;
+        }
+        
+        .price-subtitle {
+            font-size: 0.95rem;
+            opacity: 0.9;
+            font-weight: 400;
         }
         
         .price-body {
-            padding: 30px;
+            padding: 35px 30px;
         }
         
         .price-body ul {
@@ -349,63 +504,33 @@
         }
         
         .price-body li {
-            padding: 15px 0;
+            padding: 14px 0;
             border-bottom: 1px dashed var(--light-gray);
             display: flex;
             justify-content: space-between;
             align-items: center;
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
         
         .price-body li:last-child {
             border-bottom: none;
         }
         
-        /* Features Section */
-        .features-grid {
-            display: grid;
-            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
-            gap: 25px;
-            margin-top: 40px;
-        }
-        
-        .feature-card {
-            background: white;
-            padding: 30px;
-            border-radius: 15px;
-            text-align: center;
-            box-shadow: 0 8px 20px rgba(0, 0, 0, 0.06);
-            transition: all 0.3s ease;
-            border: 2px solid transparent;
-        }
-        
-        .feature-card:hover {
-            transform: translateY(-8px);
-            border-color: var(--primary);
-            box-shadow: 0 15px 30px rgba(0, 0, 0, 0.1);
-        }
-        
-        .feature-icon {
-            width: 80px;
-            height: 80px;
-            background: var(--gradient);
-            border-radius: 50%;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin: 0 auto 20px;
-            font-size: 2rem;
-            color: white;
+        .price-body .price {
+            font-weight: 700;
+            color: var(--primary);
+            font-size: 1.1rem;
         }
         
         /* Payment Section */
         .payment-section {
             background: white;
-            border-radius: 20px;
-            padding: 40px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            border-radius: var(--radius-lg);
+            padding: 50px;
+            box-shadow: var(--shadow-md);
             position: relative;
             overflow: hidden;
+            border: 1px solid #eaeaea;
         }
         
         .payment-section::before {
@@ -421,55 +546,69 @@
         .payment-method {
             display: flex;
             align-items: center;
-            gap: 30px;
-            padding: 30px;
+            gap: 40px;
+            padding: 40px;
             background: linear-gradient(135deg, #f8f9ff, #eef4ff);
-            border-radius: 15px;
+            border-radius: var(--radius-lg);
             margin: 30px 0;
             border: 2px solid var(--light-gray);
         }
         
         .payment-icon {
-            background: linear-gradient(135deg, #00bfa5, #00a896);
+            background: var(--gradient);
             color: white;
-            width: 80px;
-            height: 80px;
+            width: 90px;
+            height: 90px;
             border-radius: 20px;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2.5rem;
+            font-size: 2.8rem;
             flex-shrink: 0;
+            box-shadow: var(--shadow-md);
         }
         
         .payment-details h3 {
-            color: var(--primary);
+            color: var(--dark);
             margin-bottom: 15px;
-            font-size: 1.5rem;
+            font-size: 1.6rem;
         }
         
         .account-number {
             font-size: 1.8rem;
             font-weight: 800;
             color: var(--dark);
-            margin: 10px 0;
+            margin: 15px 0;
             background: #e9f7fe;
-            padding: 15px 20px;
-            border-radius: 10px;
+            padding: 18px 25px;
+            border-radius: 12px;
             display: inline-block;
             letter-spacing: 2px;
             border: 2px dashed var(--primary);
+            font-family: monospace;
+        }
+        
+        .account-name {
+            font-size: 1.2rem;
+            color: var(--gray);
+            margin-top: 10px;
         }
         
         .payment-note {
             background: #e8f8f5;
-            padding: 20px;
-            border-radius: 10px;
-            margin-top: 25px;
-            border-left: 5px solid #00bfa5;
+            padding: 25px;
+            border-radius: 12px;
+            margin-top: 30px;
+            border-left: 5px solid var(--secondary);
             display: flex;
             align-items: center;
-            gap: 15px;
+            gap: 20px;
+            font-size: 1.05rem;
+        }
+        
+        .payment-note i {
+            color: var(--secondary);
+            font-size: 1.8rem;
         }
         
         /* Locations Section */
@@ -481,34 +620,46 @@
         
         .location-card {
             background: white;
-            border-radius: 20px;
+            border-radius: var(--radius-lg);
             overflow: hidden;
-            box-shadow: 0 10px 25px rgba(0, 0, 0, 0.08);
+            box-shadow: var(--shadow-md);
             transition: all 0.3s ease;
         }
         
         .location-card:hover {
             transform: translateY(-10px);
-            box-shadow: 0 20px 35px rgba(0, 0, 0, 0.12);
+            box-shadow: var(--shadow-lg);
         }
         
         .location-header {
             background: var(--gradient);
             color: white;
-            padding: 20px 25px;
+            padding: 25px;
             font-weight: 700;
             font-size: 1.3rem;
+            position: relative;
+        }
+        
+        .location-header::after {
+            content: '';
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 5px;
+            background: var(--accent);
         }
         
         .location-body {
-            padding: 30px;
+            padding: 35px 30px;
         }
         
         .location-body p {
-            margin-bottom: 20px;
+            margin-bottom: 25px;
             display: flex;
             align-items: flex-start;
             gap: 15px;
+            font-size: 1.05rem;
         }
         
         .location-body i {
@@ -522,14 +673,34 @@
         .contact-container {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(350px, 1fr));
-            gap: 40px;
+            gap: 50px;
         }
         
         .contact-form {
             background: white;
-            padding: 40px;
-            border-radius: 20px;
-            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.08);
+            padding: 50px 40px;
+            border-radius: var(--radius-lg);
+            box-shadow: var(--shadow-md);
+            border: 1px solid #eaeaea;
+        }
+        
+        .contact-form h3 {
+            color: var(--dark);
+            margin-bottom: 30px;
+            font-size: 1.8rem;
+            position: relative;
+            padding-bottom: 15px;
+        }
+        
+        .contact-form h3::after {
+            content: '';
+            position: absolute;
+            width: 60px;
+            height: 4px;
+            background: var(--gradient);
+            bottom: 0;
+            left: 0;
+            border-radius: 2px;
         }
         
         .form-group {
@@ -541,30 +712,36 @@
             margin-bottom: 10px;
             font-weight: 600;
             color: var(--dark);
-            font-size: 1.1rem;
+            font-size: 1.05rem;
         }
         
         .form-control {
             width: 100%;
-            padding: 15px 20px;
+            padding: 16px 20px;
             border: 2px solid var(--light-gray);
             border-radius: 10px;
             font-size: 1rem;
             transition: all 0.3s;
+            font-family: 'Inter', sans-serif;
         }
         
         .form-control:focus {
             outline: none;
             border-color: var(--primary);
-            box-shadow: 0 0 0 4px rgba(0, 86, 179, 0.1);
+            box-shadow: 0 0 0 4px rgba(0, 102, 204, 0.1);
+        }
+        
+        textarea.form-control {
+            min-height: 150px;
+            resize: vertical;
         }
         
         /* Footer */
         footer {
             background: var(--dark);
             color: white;
-            padding: 60px 0 30px;
-            margin-top: 80px;
+            padding: 80px 0 30px;
+            margin-top: 100px;
         }
         
         .footer-container {
@@ -576,13 +753,13 @@
         .footer-grid {
             display: grid;
             grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
-            gap: 40px;
-            margin-bottom: 40px;
+            gap: 50px;
+            margin-bottom: 50px;
         }
         
         .footer-col h3 {
             font-size: 1.4rem;
-            margin-bottom: 25px;
+            margin-bottom: 30px;
             position: relative;
             padding-bottom: 15px;
             font-weight: 700;
@@ -604,6 +781,17 @@
             align-items: flex-start;
             gap: 15px;
             opacity: 0.9;
+            line-height: 1.6;
+        }
+        
+        .footer-col a {
+            color: white;
+            text-decoration: none;
+            transition: color 0.3s;
+        }
+        
+        .footer-col a:hover {
+            color: var(--accent);
         }
         
         .social-links {
@@ -616,13 +804,13 @@
             display: flex;
             align-items: center;
             justify-content: center;
-            width: 45px;
-            height: 45px;
+            width: 50px;
+            height: 50px;
             background: rgba(255, 255, 255, 0.1);
             border-radius: 50%;
             color: white;
             transition: all 0.3s;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
         }
         
         .social-links a:hover {
@@ -632,10 +820,11 @@
         
         .copyright {
             text-align: center;
-            padding-top: 30px;
+            padding-top: 40px;
             border-top: 1px solid rgba(255, 255, 255, 0.1);
             color: rgba(255, 255, 255, 0.7);
             font-size: 0.95rem;
+            line-height: 1.6;
         }
         
         /* WhatsApp Button */
@@ -645,14 +834,14 @@
             right: 30px;
             background: linear-gradient(135deg, #25D366, #128C7E);
             color: white;
-            width: 65px;
-            height: 65px;
+            width: 70px;
+            height: 70px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 2rem;
-            box-shadow: 0 8px 20px rgba(37, 211, 102, 0.4);
+            font-size: 2.2rem;
+            box-shadow: 0 10px 25px rgba(37, 211, 102, 0.4);
             z-index: 1000;
             animation: pulse 2s infinite;
             transition: all 0.3s;
@@ -661,33 +850,41 @@
         
         .whatsapp-btn:hover {
             transform: scale(1.15) rotate(10deg);
-            box-shadow: 0 12px 25px rgba(37, 211, 102, 0.6);
+            box-shadow: 0 15px 30px rgba(37, 211, 102, 0.6);
+            animation: none;
+        }
+        
+        @keyframes pulse {
+            0% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0.7); }
+            70% { box-shadow: 0 0 0 15px rgba(37, 211, 102, 0); }
+            100% { box-shadow: 0 0 0 0 rgba(37, 211, 102, 0); }
         }
         
         /* Admin Button */
         .admin-btn {
             position: fixed;
-            bottom: 110px;
+            bottom: 120px;
             right: 30px;
             background: linear-gradient(135deg, #6c757d, #495057);
             color: white;
-            width: 50px;
-            height: 50px;
+            width: 55px;
+            height: 55px;
             border-radius: 50%;
             display: flex;
             align-items: center;
             justify-content: center;
-            font-size: 1.2rem;
+            font-size: 1.3rem;
             box-shadow: 0 6px 15px rgba(108, 117, 125, 0.4);
             z-index: 1000;
             transition: all 0.3s;
             text-decoration: none;
-            opacity: 0.7;
+            opacity: 0.8;
         }
         
         .admin-btn:hover {
             opacity: 1;
             transform: scale(1.1);
+            box-shadow: 0 10px 20px rgba(108, 117, 125, 0.5);
         }
         
         /* Modal Styles */
@@ -704,6 +901,7 @@
             align-items: center;
             backdrop-filter: blur(5px);
             animation: fadeIn 0.3s ease;
+            padding: 20px;
         }
         
         @keyframes fadeIn {
@@ -713,15 +911,16 @@
         
         .modal-content {
             background-color: white;
-            padding: 40px;
-            border-radius: 20px;
-            width: 90%;
-            max-width: 550px;
+            padding: 50px 40px;
+            border-radius: var(--radius-lg);
+            width: 100%;
+            max-width: 600px;
             position: relative;
-            box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3);
+            box-shadow: var(--shadow-lg);
             max-height: 90vh;
             overflow-y: auto;
             animation: slideUp 0.4s ease;
+            border: 1px solid #eaeaea;
         }
         
         @keyframes slideUp {
@@ -731,9 +930,9 @@
         
         .close-modal {
             position: absolute;
-            top: 20px;
+            top: 25px;
             right: 25px;
-            font-size: 2rem;
+            font-size: 1.8rem;
             cursor: pointer;
             color: var(--gray);
             transition: all 0.3s;
@@ -743,12 +942,76 @@
             align-items: center;
             justify-content: center;
             border-radius: 50%;
+            background: var(--light);
         }
         
         .close-modal:hover {
             color: var(--dark);
-            background-color: var(--light);
+            background-color: var(--light-gray);
             transform: rotate(90deg);
+        }
+        
+        .time-option {
+            background: var(--light);
+            padding: 20px;
+            border-radius: 12px;
+            cursor: pointer;
+            border: 2px solid transparent;
+            transition: all 0.2s;
+            text-align: center;
+        }
+        
+        .time-option:hover {
+            background: #e3f2fd;
+        }
+        
+        .time-option.selected {
+            border-color: var(--primary);
+            background: #e3f2fd;
+        }
+        
+        /* Stats Section */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 30px;
+            margin-top: 50px;
+        }
+        
+        .stat-card {
+            text-align: center;
+            padding: 30px;
+            background: white;
+            border-radius: var(--radius);
+            box-shadow: var(--shadow-sm);
+        }
+        
+        .stat-number {
+            font-size: 2.5rem;
+            font-weight: 800;
+            color: var(--primary);
+            margin-bottom: 10px;
+        }
+        
+        .stat-label {
+            color: var(--gray);
+            font-size: 1rem;
+        }
+        
+        /* Loading Indicator */
+        .loading {
+            display: inline-block;
+            width: 20px;
+            height: 20px;
+            border: 3px solid rgba(255,255,255,.3);
+            border-radius: 50%;
+            border-top-color: white;
+            animation: spin 1s ease-in-out infinite;
+            margin-right: 10px;
+        }
+        
+        @keyframes spin {
+            to { transform: rotate(360deg); }
         }
         
         /* Responsive Design */
@@ -764,6 +1027,18 @@
             .section-title h2 {
                 font-size: 2.5rem;
             }
+            
+            .payment-method {
+                flex-direction: column;
+                text-align: center;
+                gap: 30px;
+            }
+            
+            .payment-icon {
+                width: 80px;
+                height: 80px;
+                font-size: 2.5rem;
+            }
         }
         
         @media (max-width: 768px) {
@@ -774,6 +1049,7 @@
             
             .contact-info {
                 align-items: center;
+                text-align: center;
                 width: 100%;
             }
             
@@ -805,9 +1081,36 @@
                 font-size: 2.2rem;
             }
             
-            .payment-method {
-                flex-direction: column;
+            .container {
+                padding: 60px 20px;
+            }
+            
+            .payment-section, .contact-form {
+                padding: 30px 25px;
+            }
+            
+            .modal-content {
+                padding: 40px 25px;
+            }
+            
+            .floating-badge {
+                width: 90%;
                 text-align: center;
+                padding: 15px 20px;
+                font-size: 1rem;
+            }
+            
+            .whatsapp-btn {
+                width: 60px;
+                height: 60px;
+                font-size: 1.8rem;
+                bottom: 20px;
+                right: 20px;
+            }
+            
+            .admin-btn {
+                bottom: 100px;
+                right: 20px;
             }
         }
         
@@ -825,11 +1128,21 @@
             }
             
             .price-card, .contact-form, .payment-section {
-                padding: 25px;
+                padding: 25px 20px;
             }
             
             .account-number {
                 font-size: 1.5rem;
+                padding: 15px 20px;
+            }
+            
+            .features-grid, .pricing-grid, .locations-grid {
+                grid-template-columns: 1fr;
+            }
+            
+            .floating-badge {
+                font-size: 0.9rem;
+                padding: 12px 20px;
             }
         }
     </style>
@@ -838,12 +1151,12 @@
     <!-- Header -->
     <header>
         <div class="header-container">
-            <div class="logo">
+            <a href="#" class="logo">
                 <div class="logo-icon">
                     <i class="fas fa-tshirt"></i>
                 </div>
                 <h1>STANDARD WASH LAUNDRY</h1>
-            </div>
+            </a>
             <div class="contact-info">
                 <div class="phone-numbers">
                     <a href="tel:09029518654"><i class="fas fa-phone"></i> 09029518654</a>
@@ -879,6 +1192,7 @@
     <section class="container">
         <div class="section-title">
             <h2>Why Choose Us</h2>
+            <p class="section-subtitle">Experience premium laundry services with convenience and reliability</p>
         </div>
         <div class="features-grid">
             <div class="feature-card">
@@ -886,28 +1200,42 @@
                     <i class="fas fa-truck"></i>
                 </div>
                 <h3>Free Pickup & Delivery</h3>
-                <p>We come to you - absolutely free!</p>
+                <p>We come to you - absolutely free! Schedule at your convenience.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-clock"></i>
                 </div>
                 <h3>Same Day Service</h3>
-                <p>Express washing available</p>
+                <p>Express washing available for urgent needs.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-shield-alt"></i>
                 </div>
                 <h3>Quality Guaranteed</h3>
-                <p>100% satisfaction or money back</p>
+                <p>100% satisfaction or your money back guaranteed.</p>
             </div>
             <div class="feature-card">
                 <div class="feature-icon">
                     <i class="fas fa-money-bill-wave"></i>
                 </div>
                 <h3>Pay After Delivery</h3>
-                <p>No upfront payment required</p>
+                <p>No upfront payment required. Pay only when satisfied.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-certificate"></i>
+                </div>
+                <h3>Professional Staff</h3>
+                <p>Trained experts handling your garments with care.</p>
+            </div>
+            <div class="feature-card">
+                <div class="feature-icon">
+                    <i class="fas fa-spray-can"></i>
+                </div>
+                <h3>Eco-Friendly Products</h3>
+                <p>Using environmentally safe detergents and methods.</p>
             </div>
         </div>
     </section>
@@ -916,40 +1244,45 @@
     <section class="container" id="pricing">
         <div class="section-title">
             <h2>Our Price List</h2>
+            <p class="section-subtitle">Transparent pricing with no hidden fees</p>
         </div>
         <div class="pricing-grid">
             <div class="price-card">
                 <div class="price-header">
                     <h3>Clothing Services</h3>
+                    <p class="price-subtitle">Regular Wear</p>
                 </div>
                 <div class="price-body">
                     <ul>
-                        <li>Single Shirt <span class="price-amount">₦500</span></li>
-                        <li>Big Baggy Jeans <span class="price-amount">₦800</span></li>
-                        <li>Big Pullover/Hoodie <span class="price-amount">₦800</span></li>
-                        <li>One Up and Down <span class="price-amount">₦1,000</span></li>
-                        <li>Express Washing <span class="price-amount">₦1,000</span></li>
-                        <li>One Set of Suit <span class="price-amount">₦2,000</span></li>
-                        <li>Ironing of Gown <span class="price-amount">₦500</span></li>
-                        <li>Ironing of Shirt <span class="price-amount">₦300</span></li>
-                        <li>Washing of Gown <span class="price-amount">₦800</span></li>
+                        <li>Single Shirt <span class="price">₦500</span></li>
+                        <li>Big Baggy Jeans <span class="price">₦800</span></li>
+                        <li>Big Pullover/Hoodie <span class="price">₦800</span></li>
+                        <li>One Up and Down <span class="price">₦1,000</span></li>
+                        <li>Express Washing <span class="price">₦1,000</span></li>
+                        <li>One Set of Suit <span class="price">₦2,000</span></li>
+                        <li>Ironing of Gown <span class="price">₦500</span></li>
+                        <li>Ironing of Shirt <span class="price">₦300</span></li>
+                        <li>Washing of Gown <span class="price">₦800</span></li>
                     </ul>
                 </div>
             </div>
             
-            <div class="price-card">
+            <div class="price-card featured">
                 <div class="price-header">
                     <h3>Home Linens</h3>
+                    <p class="price-subtitle">Bed & Bath</p>
                 </div>
                 <div class="price-body">
                     <ul>
-                        <li>Big Towel <span class="price-amount">₦1,000</span></li>
-                        <li>Medium Size Towel <span class="price-amount">₦700</span></li>
-                        <li>Small Towel <span class="price-amount">₦500</span></li>
-                        <li>Bed Spread <span class="price-amount">₦1,000</span></li>
-                        <li>Washing of Duvet <span class="price-amount">₦2,000</span></li>
-                        <li>Washing of Curtain <span class="price-amount">₦2,000+</span></li>
-                        <li>Washing of Rough Carpet <span class="price-amount">₦2,500+</span></li>
+                        <li>Big Towel <span class="price">₦1,000</span></li>
+                        <li>Medium Size Towel <span class="price">₦700</span></li>
+                        <li>Small Towel <span class="price">₦500</span></li>
+                        <li>Bed Spread <span class="price">₦1,000</span></li>
+                        <li>Washing of Duvet <span class="price">₦2,000</span></li>
+                        <li>Washing of Curtain <span class="price">₦2,000+</span></li>
+                        <li>Washing of Rough Carpet <span class="price">₦2,500+</span></li>
+                        <li>Pillow Cases (set of 2) <span class="price">₦800</span></li>
+                        <li>Blanket <span class="price">₦1,500</span></li>
                     </ul>
                 </div>
             </div>
@@ -957,16 +1290,19 @@
             <div class="price-card">
                 <div class="price-header">
                     <h3>Special Services</h3>
+                    <p class="price-subtitle">Premium Care</p>
                 </div>
                 <div class="price-body">
                     <ul>
-                        <li>Sneakers Cleaning <span class="price-amount">₦800</span></li>
-                        <li>Industrial Washing <span class="price-amount">₦5,000+</span></li>
-                        <li>Express Service <span class="price-amount">+50% fee</span></li>
-                        <li>Same Day Delivery <span class="price-amount">+30% fee</span></li>
-                        <li>Stain Removal <span class="price-amount">Included</span></li>
-                        <li>Fragrance Additive <span class="price-amount">+₦200</span></li>
-                        <li>Wardrobe Organizing <span class="price-amount">₦1,500</span></li>
+                        <li>Sneakers Cleaning <span class="price">₦800</span></li>
+                        <li>Industrial Washing <span class="price">₦5,000+</span></li>
+                        <li>Express Service <span class="price">+50% fee</span></li>
+                        <li>Same Day Delivery <span class="price">+30% fee</span></li>
+                        <li>Stain Removal <span class="price">Included</span></li>
+                        <li>Fragrance Additive <span class="price">+₦200</span></li>
+                        <li>Wardrobe Organizing <span class="price">₦1,500</span></li>
+                        <li>Dry Cleaning (Suit) <span class="price">₦2,500</span></li>
+                        <li>Leather Cleaning <span class="price">₦3,000+</span></li>
                     </ul>
                 </div>
             </div>
@@ -977,10 +1313,11 @@
     <section class="container" id="payment">
         <div class="section-title">
             <h2>Payment Details</h2>
+            <p class="section-subtitle">Secure and convenient payment options</p>
         </div>
         <div class="payment-section">
-            <h3 style="color: var(--primary); margin-bottom: 15px;">How to Pay</h3>
-            <p style="font-size: 1.1rem; margin-bottom: 25px;">Pay securely using our Palmpay account. Payment is due after delivery.</p>
+            <h3 style="color: var(--dark); margin-bottom: 10px;">How to Pay</h3>
+            <p style="font-size: 1.1rem; margin-bottom: 30px; color: var(--gray);">Pay securely using our Palmpay account. Payment is due after delivery.</p>
             
             <div class="payment-method">
                 <div class="payment-icon">
@@ -988,15 +1325,16 @@
                 </div>
                 <div class="payment-details">
                     <h3>Palmpay Payment</h3>
-                    <p style="margin-bottom: 10px;"><strong>Account Name:</strong> Sunday Caleb</p>
-                    <p style="margin-bottom: 5px;"><strong>Account Number:</strong></p>
+                    <p style="margin-bottom: 5px; font-size: 1.1rem;"><strong>Account Name:</strong> Sunday Caleb</p>
+                    <p style="margin-bottom: 10px; font-size: 1.1rem;"><strong>Account Number:</strong></p>
                     <div class="account-number">9029518654</div>
-                    <button class="btn" id="copyAccount" style="padding: 12px 25px; margin-top: 15px; background: var(--primary); color: white;">
+                    <div class="account-name">Sunday Caleb</div>
+                    <button class="btn btn-primary" id="copyAccount" style="padding: 14px 30px; margin-top: 20px;">
                         <i class="fas fa-copy"></i> Copy Account Number
                     </button>
                     <div class="payment-note">
-                        <i class="fas fa-check-circle" style="color: #00bfa5; font-size: 1.3rem;"></i>
-                        <span>Pay AFTER delivery • Receipts via email • NO HIDDEN FEES</span>
+                        <i class="fas fa-check-circle"></i>
+                        <span>Pay AFTER delivery • Receipts via email • NO HIDDEN FEES • Contact us for other payment methods</span>
                     </div>
                 </div>
             </div>
@@ -1007,17 +1345,19 @@
     <section class="container" id="locations">
         <div class="section-title">
             <h2>Our Locations</h2>
+            <p class="section-subtitle">Serving Port Harcourt with convenient locations</p>
         </div>
         <div class="locations-grid">
             <div class="location-card">
                 <div class="location-header">
-                    Head Branch
+                    <i class="fas fa-map-marker-alt"></i> Head Branch
                 </div>
                 <div class="location-body">
-                    <p><i class="fas fa-map-marker-alt"></i> 14 Chiwota Street Off St Johns by Ogbogoro Road, Port Harcourt</p>
+                    <p><i class="fas fa-map-pin"></i> 14 Chiwota Street Off St Johns by Ogbogoro Road, Port Harcourt</p>
                     <p><i class="fas fa-phone"></i> 07068301550, 09134881246</p>
-                    <div style="margin: 25px 0;">
-                        <button class="btn" style="width: 100%; background: var(--primary); color: white;" onclick="window.open('https://maps.google.com/?q=14+Chiwota+Street+Off+St+Johns+by+Ogbogoro+Road+Port+Harcourt', '_blank')">
+                    <p><i class="fas fa-clock"></i> Mon-Sun: 7:30 AM - 10:00 PM</p>
+                    <div style="margin: 30px 0;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.open('https://maps.google.com/?q=14+Chiwota+Street+Off+St+Johns+by+Ogbogoro+Road+Port+Harcourt', '_blank')">
                             <i class="fas fa-map-marked-alt"></i> Get Directions
                         </button>
                     </div>
@@ -1026,13 +1366,14 @@
             
             <div class="location-card">
                 <div class="location-header">
-                    Branch Office
+                    <i class="fas fa-map-marker-alt"></i> Branch Office
                 </div>
                 <div class="location-body">
-                    <p><i class="fas fa-map-marker-alt"></i> Road 2 Ruhuali Estate, Ogbogoro, Port Harcourt</p>
+                    <p><i class="fas fa-map-pin"></i> Road 2 Ruhuali Estate, Ogbogoro, Port Harcourt</p>
                     <p><i class="fas fa-phone"></i> 09029518654, 07068301550</p>
-                    <div style="margin: 25px 0;">
-                        <button class="btn" style="width: 100%; background: var(--primary); color: white;" onclick="window.open('https://maps.google.com/?q=Road+2+Ruhuali+Estate+Ogbogoro+Port+Harcourt', '_blank')">
+                    <p><i class="fas fa-clock"></i> Mon-Sun: 7:30 AM - 10:00 PM</p>
+                    <div style="margin: 30px 0;">
+                        <button class="btn btn-primary" style="width: 100%;" onclick="window.open('https://maps.google.com/?q=Road+2+Ruhuali+Estate+Ogbogoro+Port+Harcourt', '_blank')">
                             <i class="fas fa-map-marked-alt"></i> Get Directions
                         </button>
                     </div>
@@ -1041,22 +1382,49 @@
         </div>
     </section>
 
+    <!-- Stats Section -->
+    <section class="container">
+        <div class="section-title">
+            <h2>Our Achievements</h2>
+            <p class="section-subtitle">Trusted by hundreds of satisfied customers</p>
+        </div>
+        <div class="stats-grid">
+            <div class="stat-card">
+                <div class="stat-number">5000+</div>
+                <div class="stat-label">Happy Customers</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">24/7</div>
+                <div class="stat-label">Customer Support</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">99%</div>
+                <div class="stat-label">Satisfaction Rate</div>
+            </div>
+            <div class="stat-card">
+                <div class="stat-number">50+</div>
+                <div class="stat-label">Corporate Clients</div>
+            </div>
+        </div>
+    </section>
+
     <!-- Contact Section -->
     <section class="container" id="contact">
         <div class="section-title">
             <h2>Contact Us</h2>
+            <p class="section-subtitle">Get in touch for inquiries or service bookings</p>
         </div>
         <div class="contact-container">
             <div class="contact-form">
-                <h3 style="color: var(--primary); margin-bottom: 25px;">Send Feedback or Book Service</h3>
+                <h3>Send Feedback or Book Service</h3>
                 <form id="feedbackForm">
                     <div class="form-group">
                         <label for="name">Full Name</label>
-                        <input type="text" id="name" class="form-control" required>
+                        <input type="text" id="name" class="form-control" placeholder="Enter your full name" required>
                     </div>
                     <div class="form-group">
                         <label for="phone">Phone Number</label>
-                        <input type="tel" id="phone" class="form-control" required>
+                        <input type="tel" id="phone" class="form-control" placeholder="Enter your phone number" required>
                     </div>
                     <div class="form-group">
                         <label for="service">Service Needed</label>
@@ -1069,13 +1437,15 @@
                             <option value="Curtains/Bedsheets">Curtains/Bedsheets</option>
                             <option value="Industrial Washing">Industrial Washing</option>
                             <option value="Pickup & Delivery">Pickup & Delivery</option>
+                            <option value="Ironing">Ironing</option>
+                            <option value="Other">Other Services</option>
                         </select>
                     </div>
                     <div class="form-group">
                         <label for="message">Your Message</label>
-                        <textarea id="message" class="form-control" rows="5" required></textarea>
+                        <textarea id="message" class="form-control" rows="5" placeholder="Tell us about your laundry needs or any special instructions..." required></textarea>
                     </div>
-                    <button type="submit" class="btn" style="background: var(--primary); color: white; width: 100%;">
+                    <button type="submit" class="btn btn-primary" style="width: 100%; padding: 18px;" id="feedbackSubmitBtn">
                         <i class="fas fa-paper-plane"></i> Send Feedback
                     </button>
                 </form>
@@ -1092,15 +1462,16 @@
                     <p><i class="fas fa-map-marker-alt"></i> Head Branch: 14 Chiwota Street Off St Johns by Ogbogoro Road, Port Harcourt</p>
                     <p><i class="fas fa-map-marker-alt"></i> Branch Office: Road 2 Ruhuali Estate, Ogbogoro, Port Harcourt</p>
                     <p><i class="fas fa-envelope"></i> standardwashlaundry@gmail.com</p>
+                    <p><i class="fas fa-phone"></i> 09029518654 | 07068301550</p>
                 </div>
                 
                 <div class="footer-col">
                     <h3>Quick Links</h3>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#" style="color: white; text-decoration: none;">Home</a></p>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#pricing" style="color: white; text-decoration: none;">Price List</a></p>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#payment" style="color: white; text-decoration: none;">Payment</a></p>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#locations" style="color: white; text-decoration: none;">Locations</a></p>
-                    <p><i class="fas fa-chevron-right"></i> <a href="#contact" style="color: white; text-decoration: none;">Contact Us</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#">Home</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#pricing">Price List</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#payment">Payment</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#locations">Locations</a></p>
+                    <p><i class="fas fa-chevron-right"></i> <a href="#contact">Contact Us</a></p>
                 </div>
                 
                 <div class="footer-col">
@@ -1111,22 +1482,24 @@
                     <p><i class="fas fa-truck"></i> FREE Pickup & Delivery Daily</p>
                     
                     <div class="social-links">
-                        <a href="https://wa.me/2348161848922" target="_blank"><i class="fab fa-whatsapp"></i></a>
-                        <a href="tel:09029518654"><i class="fas fa-phone"></i></a>
-                        <a href="mailto:standardwashlaundry@gmail.com"><i class="fas fa-envelope"></i></a>
+                        <a href="https://wa.me/2348161848922" target="_blank" title="WhatsApp"><i class="fab fa-whatsapp"></i></a>
+                        <a href="tel:09029518654" title="Call"><i class="fas fa-phone"></i></a>
+                        <a href="mailto:standardwashlaundry@gmail.com" title="Email"><i class="fas fa-envelope"></i></a>
+                        <a href="#" title="Facebook"><i class="fab fa-facebook-f"></i></a>
+                        <a href="#" title="Instagram"><i class="fab fa-instagram"></i></a>
                     </div>
                 </div>
             </div>
             
             <div class="copyright">
                 <p>&copy; 2025 Standard Wash Laundry. All rights reserved.</p>
-                <p>Professional Laundry Services in Port Harcourt</p>
+                <p>Professional Laundry Services in Port Harcourt | Serving Since 2018</p>
             </div>
         </div>
     </footer>
 
     <!-- WhatsApp Button -->
-    <a href="https://wa.me/2348161848922" class="whatsapp-btn" target="_blank">
+    <a href="https://wa.me/2348161848922" class="whatsapp-btn" target="_blank" title="Chat on WhatsApp">
         <i class="fab fa-whatsapp"></i>
     </a>
 
@@ -1139,41 +1512,41 @@
     <div id="pickupModal" class="modal">
         <div class="modal-content">
             <span class="close-modal">&times;</span>
-            <h2 style="color: var(--primary); margin-bottom: 15px;">Request FREE Pickup & Delivery</h2>
-            <p style="margin-bottom: 25px; font-size: 1.1rem;">We'll pick up your laundry and deliver it back - completely free!</p>
+            <h2 style="color: var(--dark); margin-bottom: 10px;">Request FREE Pickup & Delivery</h2>
+            <p style="margin-bottom: 30px; color: var(--gray); font-size: 1.1rem;">We'll pick up your laundry and deliver it back - completely free!</p>
             
             <form id="pickupForm" style="display: flex; flex-direction: column; gap: 20px;">
                 <div class="form-group">
                     <label for="pickupName">Full Name</label>
-                    <input type="text" id="pickupName" class="form-control" required>
+                    <input type="text" id="pickupName" class="form-control" placeholder="Enter your full name" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="pickupPhone">Phone Number</label>
-                    <input type="tel" id="pickupPhone" class="form-control" required>
+                    <input type="tel" id="pickupPhone" class="form-control" placeholder="Enter your phone number" required>
                 </div>
                 
                 <div class="form-group">
                     <label for="pickupAddress">Full Address</label>
-                    <textarea id="pickupAddress" class="form-control" rows="3" placeholder="House number, Street, Area, Landmark" required></textarea>
+                    <textarea id="pickupAddress" class="form-control" rows="3" placeholder="House number, Street, Area, Landmark (We serve Port Harcourt and environs)" required></textarea>
                 </div>
                 
                 <div class="form-group">
                     <label>Preferred Pickup Time</label>
                     <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 12px; margin-top: 10px;">
-                        <div class="time-option" data-value="Morning (8AM-12PM)" style="background: var(--light); padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; text-align: center;">
+                        <div class="time-option" data-value="Morning (8AM-12PM)">
                             <input type="radio" name="timePreference" value="Morning (8AM-12PM)" hidden>
                             <i class="far fa-clock"></i> Morning<br><small>8AM - 12PM</small>
                         </div>
-                        <div class="time-option" data-value="Afternoon (12PM-4PM)" style="background: var(--light); padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; text-align: center;">
+                        <div class="time-option" data-value="Afternoon (12PM-4PM)">
                             <input type="radio" name="timePreference" value="Afternoon (12PM-4PM)" hidden>
                             <i class="far fa-clock"></i> Afternoon<br><small>12PM - 4PM</small>
                         </div>
-                        <div class="time-option" data-value="Evening (4PM-8PM)" style="background: var(--light); padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; text-align: center;">
+                        <div class="time-option" data-value="Evening (4PM-8PM)">
                             <input type="radio" name="timePreference" value="Evening (4PM-8PM)" hidden>
                             <i class="far fa-clock"></i> Evening<br><small>4PM - 8PM</small>
                         </div>
-                        <div class="time-option" data-value="Anytime" style="background: var(--light); padding: 15px; border-radius: 10px; cursor: pointer; border: 2px solid transparent; transition: all 0.2s; text-align: center;">
+                        <div class="time-option" data-value="Anytime">
                             <input type="radio" name="timePreference" value="Anytime" hidden>
                             <i class="fas fa-infinity"></i> Anytime
                         </div>
@@ -1187,18 +1560,45 @@
                 
                 <div class="form-group">
                     <label for="laundryItems">Laundry Items (Optional)</label>
-                    <textarea id="laundryItems" class="form-control" rows="3" placeholder="e.g., 5 shirts, 2 jeans, 1 suit..."></textarea>
+                    <textarea id="laundryItems" class="form-control" rows="3" placeholder="e.g., 5 shirts, 2 jeans, 1 suit, 3 towels..."></textarea>
                 </div>
                 
-                <button type="submit" class="btn" style="background: var(--primary); color: white; margin-top: 10px;">
+                <button type="submit" class="btn btn-primary" style="margin-top: 10px; padding: 18px;" id="pickupSubmitBtn">
                     <i class="fas fa-calendar-check"></i> Confirm Pickup Request
                 </button>
             </form>
         </div>
     </div>
 
+    <!-- Firebase Configuration and Script -->
     <script>
+        // Firebase configuration
+        const firebaseConfig = {
+            apiKey: "AIzaSyBtkZ0u3wZbOH1hFq3mHjRzUVXj0kGxWGA",
+            authDomain: "standardwashlaundry-a30fc.firebaseapp.com",
+            databaseURL: "https://standardwashlaundry-a30fc-default-rtdb.asia-southeast1.firebasedatabase.app",
+            projectId: "standardwashlaundry-a30fc",
+            storageBucket: "standardwashlaundry-a30fc.appspot.com",
+            messagingSenderId: "172754749465",
+            appId: "1:172754749465:web:0b73e757a98710bd7bf585"
+        };
+
+        // Initialize Firebase
+        firebase.initializeApp(firebaseConfig);
+        const database = firebase.database();
+        const auth = firebase.auth();
+
         document.addEventListener('DOMContentLoaded', function() {
+            // Header scroll effect
+            window.addEventListener('scroll', function() {
+                const header = document.querySelector('header');
+                if (window.scrollY > 50) {
+                    header.classList.add('header-scrolled');
+                } else {
+                    header.classList.remove('header-scrolled');
+                }
+            });
+            
             // Modal elements
             const pickupModal = document.getElementById('pickupModal');
             const pickupBadge = document.getElementById('pickupBadge');
@@ -1207,24 +1607,24 @@
             const pickupForm = document.getElementById('pickupForm');
             const feedbackForm = document.getElementById('feedbackForm');
             const copyAccountBtn = document.getElementById('copyAccount');
+            const pickupSubmitBtn = document.getElementById('pickupSubmitBtn');
+            const feedbackSubmitBtn = document.getElementById('feedbackSubmitBtn');
             
             // Set today's date as min for pickup date
-            const pickupDate = document.getElementById('pickupDate');
-            if (pickupDate) {
+            const pickupDateInput = document.getElementById('pickupDate');
+            if (pickupDateInput) {
                 const today = new Date().toISOString().split('T')[0];
-                pickupDate.min = today;
-                pickupDate.value = today;
+                pickupDateInput.min = today;
+                pickupDateInput.value = today;
             }
             
             // Time selection functionality
             document.querySelectorAll('.time-option').forEach(option => {
                 option.addEventListener('click', function() {
                     document.querySelectorAll('.time-option').forEach(opt => {
-                        opt.style.borderColor = 'transparent';
-                        opt.style.background = 'var(--light)';
+                        opt.classList.remove('selected');
                     });
-                    this.style.borderColor = 'var(--primary)';
-                    this.style.background = '#e3f2fd';
+                    this.classList.add('selected');
                 });
             });
             
@@ -1240,8 +1640,7 @@
                 document.body.style.overflow = 'auto';
                 pickupForm.reset();
                 document.querySelectorAll('.time-option').forEach(opt => {
-                    opt.style.borderColor = 'transparent';
-                    opt.style.background = 'var(--light)';
+                    opt.classList.remove('selected');
                 });
             }
             
@@ -1261,14 +1660,50 @@
                 if (e.key === 'Escape') closePickupModal();
             });
             
+            // Show success message
+            function showSuccessMessage(message) {
+                const successMsg = document.createElement('div');
+                successMsg.innerHTML = `
+                    <div style="position: fixed; top: 20px; right: 20px; background: var(--success); color: white; padding: 20px 25px; border-radius: 12px; z-index: 3000; box-shadow: var(--shadow-lg); max-width: 400px; animation: slideInRight 0.5s ease;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <i class="fas fa-check-circle" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong style="font-size: 1.1rem;">Success!</strong>
+                                <div style="margin-top: 5px; font-size: 0.95rem;">${message}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(successMsg);
+                setTimeout(() => successMsg.remove(), 5000);
+            }
+            
+            // Show error message
+            function showErrorMessage(message) {
+                const errorMsg = document.createElement('div');
+                errorMsg.innerHTML = `
+                    <div style="position: fixed; top: 20px; right: 20px; background: var(--danger); color: white; padding: 20px 25px; border-radius: 12px; z-index: 3000; box-shadow: var(--shadow-lg); max-width: 400px; animation: slideInRight 0.5s ease;">
+                        <div style="display: flex; align-items: center; gap: 15px;">
+                            <i class="fas fa-exclamation-circle" style="font-size: 1.5rem;"></i>
+                            <div>
+                                <strong style="font-size: 1.1rem;">Error!</strong>
+                                <div style="margin-top: 5px; font-size: 0.95rem;">${message}</div>
+                            </div>
+                        </div>
+                    </div>
+                `;
+                document.body.appendChild(errorMsg);
+                setTimeout(() => errorMsg.remove(), 5000);
+            }
+            
             // Handle pickup form submission
             pickupForm.addEventListener('submit', function(e) {
                 e.preventDefault();
                 
                 // Validate time selection
-                const selectedTime = document.querySelector('.time-option[style*="border-color: var(--primary)"]');
+                const selectedTime = document.querySelector('.time-option.selected');
                 if (!selectedTime) {
-                    alert('Please select a preferred pickup time');
+                    showErrorMessage('Please select a preferred pickup time');
                     return;
                 }
                 
@@ -1289,33 +1724,45 @@
                 
                 // Create pickup data object
                 const pickupData = {
-                    id: Date.now(),
-                    type: 'pickup',
                     name: name,
                     phone: phone,
                     address: address,
                     timePreference: timePreference,
                     pickupDate: pickupDateValue,
                     laundryItems: laundryItems,
-                    timestamp: new Date().toISOString(),
-                    status: 'pending'
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'pending',
+                    notificationSent: false
                 };
                 
-                // Save to localStorage
-                const existingPickups = JSON.parse(localStorage.getItem('standardWashPickups') || '[]');
-                existingPickups.push(pickupData);
-                localStorage.setItem('standardWashPickups', JSON.stringify(existingPickups));
+                // Show loading state
+                const originalText = pickupSubmitBtn.innerHTML;
+                pickupSubmitBtn.innerHTML = '<span class="loading"></span> Submitting...';
+                pickupSubmitBtn.disabled = true;
                 
-                // Create WhatsApp message
-                const whatsappMessage = `*PICKUP REQUEST*\n\nName: ${name}\nPhone: ${phone}\nAddress: ${address}\nDate: ${formattedDate}\nTime: ${timePreference}${laundryItems ? `\nItems: ${laundryItems}` : ''}`;
-                
-                // Close modal and show confirmation
-                closePickupModal();
-                alert('✅ Pickup request sent successfully! We will contact you shortly.');
-                
-                // Open WhatsApp
-                const whatsappUrl = `https://wa.me/2348161848922?text=${encodeURIComponent(whatsappMessage)}`;
-                window.open(whatsappUrl, '_blank');
+                // Save to Firebase Realtime Database
+                const newPickupRef = database.ref('pickups').push();
+                newPickupRef.set(pickupData)
+                    .then(() => {
+                        // Success
+                        showSuccessMessage('Pickup request sent successfully! We will contact you shortly.');
+                        
+                        // Create WhatsApp message
+                        const whatsappMessage = `*PICKUP REQUEST - Standard Wash Laundry*\n\n👤 Name: ${name}\n📱 Phone: ${phone}\n📍 Address: ${address}\n📅 Date: ${formattedDate}\n⏰ Time: ${timePreference}${laundryItems ? `\n🧺 Items: ${laundryItems}` : ''}\n\n_Request sent via website_`;
+                        const whatsappUrl = `https://wa.me/2348161848922?text=${encodeURIComponent(whatsappMessage)}`;
+                        window.open(whatsappUrl, '_blank');
+                        
+                        closePickupModal();
+                    })
+                    .catch((error) => {
+                        console.error('Error saving pickup:', error);
+                        showErrorMessage('Error saving pickup request. Please try again.');
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        pickupSubmitBtn.innerHTML = originalText;
+                        pickupSubmitBtn.disabled = false;
+                    });
             });
             
             // Handle feedback form submission
@@ -1329,31 +1776,42 @@
                 
                 // Create feedback data object
                 const feedbackData = {
-                    id: Date.now(),
-                    type: 'feedback',
                     name: name,
                     phone: phone,
                     service: service,
                     message: message,
-                    timestamp: new Date().toISOString(),
-                    status: 'pending'
+                    timestamp: firebase.database.ServerValue.TIMESTAMP,
+                    status: 'pending',
+                    notificationSent: false
                 };
                 
-                // Save to localStorage
-                const existingFeedback = JSON.parse(localStorage.getItem('standardWashFeedback') || '[]');
-                existingFeedback.push(feedbackData);
-                localStorage.setItem('standardWashFeedback', JSON.stringify(existingFeedback));
+                // Show loading state
+                const originalText = feedbackSubmitBtn.innerHTML;
+                feedbackSubmitBtn.innerHTML = '<span class="loading"></span> Sending...';
+                feedbackSubmitBtn.disabled = true;
                 
-                // Create WhatsApp message
-                const whatsappMessage = `*FEEDBACK*\n\nName: ${name}\nPhone: ${phone}\nService: ${service}\n\nMessage:\n${message}`;
-                
-                // Reset form and show confirmation
-                this.reset();
-                alert('✅ Thank you for your feedback! We will respond shortly.');
-                
-                // Open WhatsApp
-                const whatsappUrl = `https://wa.me/2348161848922?text=${encodeURIComponent(whatsappMessage)}`;
-                window.open(whatsappUrl, '_blank');
+                // Save to Firebase
+                const newFeedbackRef = database.ref('feedback').push();
+                newFeedbackRef.set(feedbackData)
+                    .then(() => {
+                        // Success
+                        this.reset();
+                        showSuccessMessage('Thank you for your feedback! We will respond shortly.');
+                        
+                        // Create WhatsApp message
+                        const whatsappMessage = `*FEEDBACK - Standard Wash Laundry*\n\n👤 Name: ${name}\n📱 Phone: ${phone}\n🛠️ Service: ${service}\n\n💬 Message:\n${message}\n\n_Sent via website_`;
+                        const whatsappUrl = `https://wa.me/2348161848922?text=${encodeURIComponent(whatsappMessage)}`;
+                        window.open(whatsappUrl, '_blank');
+                    })
+                    .catch((error) => {
+                        console.error('Error saving feedback:', error);
+                        showErrorMessage('Error saving feedback. Please try again.');
+                    })
+                    .finally(() => {
+                        // Reset button state
+                        feedbackSubmitBtn.innerHTML = originalText;
+                        feedbackSubmitBtn.disabled = false;
+                    });
             });
             
             // Copy account number functionality
@@ -1362,14 +1820,16 @@
                 navigator.clipboard.writeText(accountNumber).then(() => {
                     const originalText = this.innerHTML;
                     this.innerHTML = '<i class="fas fa-check"></i> Copied!';
-                    this.style.background = 'var(--success)';
+                    this.classList.remove('btn-primary');
+                    this.classList.add('btn-accent');
                     
                     setTimeout(() => {
                         this.innerHTML = originalText;
-                        this.style.background = '';
+                        this.classList.remove('btn-accent');
+                        this.classList.add('btn-primary');
                     }, 2000);
                 }).catch(err => {
-                    alert('Could not copy account number. Please select and copy manually.');
+                    showErrorMessage('Could not copy account number. Please select and copy manually.');
                 });
             });
             
@@ -1388,6 +1848,29 @@
                         });
                     }
                 });
+            });
+            
+            // Add animation to elements on scroll
+            const observerOptions = {
+                threshold: 0.1,
+                rootMargin: '0px 0px -100px 0px'
+            };
+            
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        entry.target.style.opacity = '1';
+                        entry.target.style.transform = 'translateY(0)';
+                    }
+                });
+            }, observerOptions);
+            
+            // Observe elements for animation
+            document.querySelectorAll('.feature-card, .price-card, .location-card').forEach(el => {
+                el.style.opacity = '0';
+                el.style.transform = 'translateY(30px)';
+                el.style.transition = 'opacity 0.6s ease, transform 0.6s ease';
+                observer.observe(el);
             });
         });
     </script>
